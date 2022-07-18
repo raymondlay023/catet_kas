@@ -1,4 +1,4 @@
-import 'package:flutter/cupertino.dart';
+import 'package:intl/intl.dart';
 
 class TransactionModel {
   late int? id;
@@ -6,7 +6,7 @@ class TransactionModel {
   late double? total;
   late String? type;
   late DateTime? createdAt;
-  late DateTime? updatedAt;
+  // late DateTime? updatedAt;
 
   TransactionModel({
     this.id,
@@ -14,7 +14,7 @@ class TransactionModel {
     this.total,
     this.type,
     this.createdAt,
-    this.updatedAt,
+    // this.updatedAt,
   });
 
   TransactionModel.fromJson(Map<String, dynamic> json) {
@@ -23,7 +23,7 @@ class TransactionModel {
     total = double.parse(json['total'].toString());
     type = json['type'];
     createdAt = DateTime.parse(json['created_at']);
-    updatedAt = DateTime.parse(json['updated_at']);
+    // updatedAt = DateTime.parse(json['updated_at']);
   }
 
   Map<String, dynamic> toJson() {
@@ -33,7 +33,7 @@ class TransactionModel {
       'total': total,
       'type': type,
       'created_at': createdAt.toString(),
-      'updated_at': updatedAt.toString(),
+      // 'updated_at': updatedAt.toString(),
     };
   }
 }

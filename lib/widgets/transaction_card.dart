@@ -1,23 +1,30 @@
+import 'package:catet_kas/models/transaction_model.dart';
 import 'package:catet_kas/theme.dart';
 import 'package:flutter/material.dart';
 
-class Transaction extends StatelessWidget {
-  String catatan = '';
-  int harga = 0;
-  bool isPemasukan = true;
-  Transaction(
-      {required this.catatan, required this.harga, required this.isPemasukan});
+class TransactionCard extends StatelessWidget {
+  final TransactionModel transaction;
+  TransactionCard(this.transaction);
   @override
   Widget build(BuildContext context) {
+    // return Card(
+    //   elevation: 0,
+    //   child: ListTile(
+    //     contentPadding: EdgeInsets.all(12),
+    //     title: Text(transaction.note!),
+    //   ),
+    // );
     return Container(
+      decoration: BoxDecoration(),
+      padding: EdgeInsets.symmetric(vertical: 12),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
           Container(
             alignment: Alignment.center,
-            width: MediaQuery.of(context).size.width / 2,
+            width: MediaQuery.of(context).size.width / 3,
             child: Text(
-              catatan,
+              transaction.note!,
               style: primaryTextStyle.copyWith(
                 fontSize: 12,
                 color: primaryTextColor.withOpacity(0.5),
@@ -26,12 +33,14 @@ class Transaction extends StatelessWidget {
           ),
           Container(
             alignment: Alignment.center,
-            width: MediaQuery.of(context).size.width / 2,
+            width: MediaQuery.of(context).size.width / 3,
             child: Text(
-              'Rp. $harga',
+              'Rp. ${transaction.total}',
               style: primaryTextStyle.copyWith(
                 fontSize: 12,
-                color: isPemasukan ? pemasukanColor : pengeluaranColor,
+                color: transaction.type == 'PEMASUKAN'
+                    ? pemasukanColor
+                    : pengeluaranColor,
               ),
             ),
           ),

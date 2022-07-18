@@ -3,14 +3,79 @@ import 'package:catet_kas/providers/auth_provider.dart';
 import 'package:catet_kas/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class EditProfilePage extends StatelessWidget {
+class EditProfilePage extends StatefulWidget {
   const EditProfilePage({Key? key}) : super(key: key);
 
   @override
+  State<EditProfilePage> createState() => _EditProfilePageState();
+}
+
+late String _token;
+
+class _EditProfilePageState extends State<EditProfilePage> {
+  void initState() {
+    super.initState();
+    getInit();
+  }
+
+  getInit() async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token');
+    setState(() {
+      _token = token!;
+    });
+    print(_token);
+  }
+
   Widget build(BuildContext context) {
+    @override
     AuthProvider authProvider = Provider.of<AuthProvider>(context);
     UserModel user = authProvider.user;
+
+    TextEditingController nameController =
+        TextEditingController(text: user.name);
+    TextEditingController usernameController =
+        TextEditingController(text: user.username);
+    TextEditingController emailController =
+        TextEditingController(text: user.email);
+
+    handleUpdateProfile() async {
+      if (await authProvider.update(
+        token: _token,
+        name: nameController.text,
+        username: usernameController.text,
+        email: emailController.text,
+      )) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            backgroundColor: Colors.blue,
+            content: Text(
+              'Profile berhasil diupdate!',
+              textAlign: TextAlign.center,
+              style: secondaryTextStyle.copyWith(
+                color: backgroundColor1,
+              ),
+            ),
+          ),
+        );
+        Navigator.restorablePopAndPushNamed(context, '/home');
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            backgroundColor: alertColor,
+            content: Text(
+              'Profile gagal diupdate!',
+              textAlign: TextAlign.center,
+              style: secondaryTextStyle.copyWith(
+                color: backgroundColor1,
+              ),
+            ),
+          ),
+        );
+      }
+    }
 
     Widget header() {
       return Container(
@@ -21,7 +86,7 @@ class EditProfilePage extends StatelessWidget {
       );
     }
 
-    Widget input(String text, String hintText) {
+    Widget inputNama() {
       return Container(
         margin: EdgeInsets.only(
           top: defaultMargin,
@@ -30,7 +95,7 @@ class EditProfilePage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              text,
+              'Nama',
               style: primaryTextStyle.copyWith(
                 fontSize: 14,
                 fontWeight: bold,
@@ -38,11 +103,88 @@ class EditProfilePage extends StatelessWidget {
               ),
             ),
             TextFormField(
+              controller: nameController,
               style: secondaryTextStyle.copyWith(
                 color: backgroundColor1,
               ),
               decoration: InputDecoration(
-                hintText: hintText,
+                hintText: 'Masukkan nama anda',
+                hintStyle: secondaryTextStyle.copyWith(
+                  color: secondaryTextColor.withOpacity(0.5),
+                ),
+                enabledBorder: UnderlineInputBorder(
+                  borderSide: BorderSide(
+                    color: backgroundColor1,
+                  ),
+                ),
+              ),
+            )
+          ],
+        ),
+      );
+    }
+
+    Widget inputUsername() {
+      return Container(
+        margin: EdgeInsets.only(
+          top: defaultMargin,
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Username',
+              style: primaryTextStyle.copyWith(
+                fontSize: 14,
+                fontWeight: bold,
+                color: cardColor,
+              ),
+            ),
+            TextFormField(
+              controller: usernameController,
+              style: secondaryTextStyle.copyWith(
+                color: backgroundColor1,
+              ),
+              decoration: InputDecoration(
+                hintText: 'Masukkan username anda',
+                hintStyle: secondaryTextStyle.copyWith(
+                  color: secondaryTextColor.withOpacity(0.5),
+                ),
+                enabledBorder: UnderlineInputBorder(
+                  borderSide: BorderSide(
+                    color: backgroundColor1,
+                  ),
+                ),
+              ),
+            )
+          ],
+        ),
+      );
+    }
+
+    Widget inputEmail() {
+      return Container(
+        margin: EdgeInsets.only(
+          top: defaultMargin,
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Email',
+              style: primaryTextStyle.copyWith(
+                fontSize: 14,
+                fontWeight: bold,
+                color: cardColor,
+              ),
+            ),
+            TextFormField(
+              controller: emailController,
+              style: secondaryTextStyle.copyWith(
+                color: backgroundColor1,
+              ),
+              decoration: InputDecoration(
+                hintText: 'Masukkan email anda',
                 hintStyle: secondaryTextStyle.copyWith(
                   color: secondaryTextColor.withOpacity(0.5),
                 ),
@@ -68,7 +210,7 @@ class EditProfilePage extends StatelessWidget {
             Container(
               width: 100,
               height: 100,
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 shape: BoxShape.circle,
                 image: DecorationImage(
                   fit: BoxFit.fill,
@@ -77,10 +219,10 @@ class EditProfilePage extends StatelessWidget {
                 ),
               ),
             ),
-            SizedBox(height: 10),
-            input('Nama', user.name!),
-            input('Username', '@${user.username!}'),
-            input('Email', user.email!),
+            const SizedBox(height: 10),
+            inputNama(),
+            inputUsername(),
+            inputEmail(),
           ],
         ),
       );
@@ -94,7 +236,7 @@ class EditProfilePage extends StatelessWidget {
           onPressed: () {
             Navigator.pop(context);
           },
-          icon: Icon(Icons.close),
+          icon: const Icon(Icons.close),
         ),
         backgroundColor: backgroundColor4,
         elevation: 0,
@@ -108,8 +250,8 @@ class EditProfilePage extends StatelessWidget {
         ),
         actions: [
           IconButton(
-            onPressed: () {},
-            icon: Icon(Icons.check),
+            onPressed: handleUpdateProfile,
+            icon: const Icon(Icons.check),
           ),
         ],
       ),

@@ -1,19 +1,37 @@
+import 'package:catet_kas/providers/auth_provider.dart';
+import 'package:catet_kas/providers/transaction_provider.dart';
 import 'package:catet_kas/theme.dart';
 import 'package:catet_kas/widgets/transaction_card.dart';
-import 'package:catet_kas/widgets/transaction_summary_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
+import 'package:grouped_list/grouped_list.dart';
+import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 class CatetPage extends StatefulWidget {
   const CatetPage({Key? key}) : super(key: key);
-
   @override
   State<CatetPage> createState() => _CatetPageState();
 }
 
 class _CatetPageState extends State<CatetPage> {
+  void initState() {
+    super.initState();
+    getInit();
+  }
+
+  getInit() async {
+    AuthProvider authProvider =
+        Provider.of<AuthProvider>(context, listen: false);
+    await Provider.of<TransactionProvider>(context, listen: false)
+        .getTransactions(authProvider.user.token!);
+  }
+
   @override
   Widget build(BuildContext context) {
+    TransactionProvider transactionProvider =
+        Provider.of<TransactionProvider>(context);
+
     Widget emptyState() {
       return Container(
         margin: EdgeInsets.symmetric(
@@ -213,27 +231,20 @@ class _CatetPageState extends State<CatetPage> {
       return Container(
         margin: EdgeInsets.only(top: 7),
         child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            Container(
-              alignment: Alignment.center,
-              width: MediaQuery.of(context).size.width / 2,
-              child: Text(
-                'Catatan',
-                style: primaryTextStyle.copyWith(
-                  fontSize: 12,
-                  color: Colors.black,
-                ),
+            Text(
+              'Catatan',
+              style: primaryTextStyle.copyWith(
+                fontSize: 12,
+                color: Colors.black,
               ),
             ),
-            Container(
-              alignment: Alignment.center,
-              width: MediaQuery.of(context).size.width / 2,
-              child: Text(
-                'Transaksi',
-                style: primaryTextStyle.copyWith(
-                  fontSize: 12,
-                  color: Colors.black,
-                ),
+            Text(
+              'Transaksi',
+              style: primaryTextStyle.copyWith(
+                fontSize: 12,
+                color: Colors.black,
               ),
             ),
           ],
@@ -242,58 +253,67 @@ class _CatetPageState extends State<CatetPage> {
     }
 
     Widget content() {
+      // return Column(
+      //   children: [
+      //     summaryCard(),
+      //     laporanKeuanganButton(),
+      //     cari(),
+      //
+      //   ],
+      // );
+      return Expanded(
+        child: Container(
+          margin: EdgeInsets.only(top: 10),
+          padding: EdgeInsets.all(15),
+          decoration: BoxDecoration(borderRadius: BorderRadius.circular(15)),
+          child: GroupedListView<dynamic, String>(
+            separator: Divider(height: 5),
+            shrinkWrap: true,
+            itemComparator: (item1, item2) => item1.note.compareTo(item2.note),
+            groupComparator: (value1, value2) => value2.compareTo(value1),
+            elements: transactionProvider.transactions,
+            groupBy: (element) =>
+                DateFormat('dd-MM-yyyy').format(element.createdAt),
+            groupSeparatorBuilder: (value) => Column(
+              children: [
+                Container(
+                  width: 330,
+                  padding: const EdgeInsets.symmetric(vertical: 15),
+                  color: Colors.black.withAlpha(50),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        value.toString(),
+                        style: primaryTextStyle.copyWith(
+                          fontSize: 14,
+                          color: primaryTextColor,
+                        ),
+                      ),
+                      Text(
+                        '\$1000',
+                        style: primaryTextStyle.copyWith(
+                          fontSize: 14,
+                          color: alertColor,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                headerListTransaksi(),
+              ],
+            ),
+            itemBuilder: (context, element) => TransactionCard(element),
+          ),
+        ),
+      );
+    }
+
+    Widget transaksi() {
       return Column(
-        children: [
-          summaryCard(),
-          laporanKeuanganButton(),
-          cari(),
-          TransactionSummary(
-            tanggalCatat: '05 April 2023',
-            selisihHarga: 125000,
-          ),
-          headerListTransaksi(),
-          Divider(
-            thickness: 1,
-          ),
-          Transaction(
-            catatan: 'Penjualan barang a',
-            harga: 65000,
-            isPemasukan: true,
-          ),
-          Transaction(
-            catatan: 'Pembelian stok',
-            harga: 135000,
-            isPemasukan: false,
-          ),
-          Transaction(
-            catatan: 'Penjualan',
-            harga: 195000,
-            isPemasukan: true,
-          ),
-          TransactionSummary(
-            tanggalCatat: '04 April 2023',
-            selisihHarga: 56500,
-          ),
-          headerListTransaksi(),
-          Divider(
-            thickness: 1,
-          ),
-          Transaction(
-            catatan: 'Jual rokok',
-            harga: 65000,
-            isPemasukan: true,
-          ),
-          Transaction(
-            catatan: 'Bayar hutang',
-            harga: 85000,
-            isPemasukan: false,
-          ),
-          Transaction(
-            catatan: '-',
-            harga: 6500,
-            isPemasukan: false,
-          ),
-        ],
+        children: transactionProvider.transactions
+            .map((transaction) => TransactionCard(transaction))
+            .toList(),
       );
     }
 
@@ -312,8 +332,11 @@ class _CatetPageState extends State<CatetPage> {
         centerTitle: true,
         backgroundColor: primaryColor,
       ),
-      body: ListView(
+      body: Column(
         children: [
+          summaryCard(),
+          laporanKeuanganButton(),
+          cari(),
           content(),
         ],
       ),

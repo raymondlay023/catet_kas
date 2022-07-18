@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:catet_kas/models/shop_model.dart';
 
 class ShopService {
-  String baseUrl = 'http://192.168.1.6:8000/api/shops';
+  String baseUrl = 'http://192.168.1.4:8000/api/shops';
 
   Future<ShopModel> getShop(String token) async {
     var url = Uri.parse('$baseUrl/read');
@@ -64,16 +64,21 @@ class ShopService {
   }
 
   Future<ShopModel> update({
+    required String token,
     String? name,
     String? category,
     String? phoneNumber,
   }) async {
     var url = Uri.parse('$baseUrl/update');
-    var headers = {'Content-Type': 'application/json'};
+    var headers = {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': token,
+    };
     var body = jsonEncode({
       'name': name,
       'category': category,
-      'phoneNumber': phoneNumber,
+      'phone_number': phoneNumber,
     });
 
     var response = await http.post(

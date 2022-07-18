@@ -12,7 +12,7 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
-  int _selectedIndex = 0;
+  int _selectedDateIndex = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -22,10 +22,10 @@ class _MainPageState extends State<MainPage> {
         backgroundColor: Colors.white,
         elevation: 0,
         type: BottomNavigationBarType.fixed,
-        currentIndex: _selectedIndex,
+        currentIndex: _selectedDateIndex,
         onTap: (index) {
           setState(() {
-            _selectedIndex = index;
+            _selectedDateIndex = index;
           });
         },
         items: [
@@ -37,7 +37,8 @@ class _MainPageState extends State<MainPage> {
               child: Image.asset(
                 'assets/icon_home.png',
                 width: 20,
-                color: _selectedIndex == 0 ? primaryColor : primaryTextColor,
+                color:
+                    _selectedDateIndex == 0 ? primaryColor : primaryTextColor,
               ),
             ),
             label: 'Beranda',
@@ -50,7 +51,8 @@ class _MainPageState extends State<MainPage> {
               child: Image.asset(
                 'assets/icon_catet.png',
                 width: 20,
-                color: _selectedIndex == 1 ? primaryColor : primaryTextColor,
+                color:
+                    _selectedDateIndex == 1 ? primaryColor : primaryTextColor,
               ),
             ),
             label: 'Catet',
@@ -63,7 +65,8 @@ class _MainPageState extends State<MainPage> {
               child: Image.asset(
                 'assets/icon_profile.png',
                 width: 20,
-                color: _selectedIndex == 2 ? primaryColor : primaryTextColor,
+                color:
+                    _selectedDateIndex == 2 ? primaryColor : primaryTextColor,
               ),
             ),
             label: 'Profil',
@@ -73,7 +76,7 @@ class _MainPageState extends State<MainPage> {
     }
 
     Widget body() {
-      switch (_selectedIndex) {
+      switch (_selectedDateIndex) {
         case 0:
           return HomePage();
         case 1:

@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:catet_kas/providers/auth_provider.dart';
 import 'package:catet_kas/providers/shop_provider.dart';
 import 'package:catet_kas/providers/transaction_provider.dart';
@@ -7,6 +5,7 @@ import 'package:catet_kas/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:catet_kas/providers/product_provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoadingPage extends StatefulWidget {
   const LoadingPage({Key? key}) : super(key: key);
@@ -30,6 +29,9 @@ class _LoadingPageState extends State<LoadingPage> {
         .getTransactions(authProvider.user.token!);
     await Provider.of<ShopProvider>(context, listen: false)
         .getShop(authProvider.user.token!);
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setString('token', authProvider.user.token!);
+    print(prefs.getString('token'));
     Navigator.pushNamed(context, '/home');
   }
 

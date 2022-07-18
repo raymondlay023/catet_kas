@@ -72,7 +72,7 @@ class CatatPengeluaran extends StatelessWidget {
         ),
         child: TextButton(
           onPressed: () {
-            Navigator.pushNamed(context, '/daftar-barang');
+            Navigator.pushNamed(context, '/product-list');
           },
           child: Text(
             '+ Tambah Barang Dibeli',

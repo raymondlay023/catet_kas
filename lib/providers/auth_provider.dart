@@ -49,4 +49,46 @@ class AuthProvider with ChangeNotifier {
       return false;
     }
   }
+
+  Future<bool> update({
+    required String token,
+    required String name,
+    required String username,
+    required String email,
+  }) async {
+    try {
+      UserModel user = await AuthService().update(
+        token: token,
+        name: name,
+        username: username,
+        email: email,
+      );
+      _user = user;
+      return true;
+    } catch (e) {
+      print(e);
+      return false;
+    }
+  }
+
+  Future<bool> logout(String token) async {
+    try {
+      await AuthService().logout(token);
+      return true;
+    } catch (e) {
+      print(e);
+      return false;
+    }
+  }
+
+  Future<bool> getUser(String token) async {
+    try {
+      await AuthService().getUser(token: token);
+      _user = user;
+      return true;
+    } catch (e) {
+      print(e);
+      return false;
+    }
+  }
 }

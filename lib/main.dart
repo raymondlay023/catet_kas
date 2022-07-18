@@ -1,5 +1,5 @@
 import 'package:catet_kas/pages/catat_pemasukan_page.dart';
-import 'package:catet_kas/pages/daftar_barang_page.dart';
+import 'package:catet_kas/pages/product_list_page.dart';
 import 'package:catet_kas/pages/edit_profile_page.dart';
 import 'package:catet_kas/pages/edit_shop_profile_page.dart';
 import 'package:catet_kas/pages/catat_pengeluaran_page.dart';
@@ -8,14 +8,16 @@ import 'package:catet_kas/pages/loading_page.dart';
 import 'package:catet_kas/pages/sign_in_page.dart';
 import 'package:catet_kas/pages/sign_up_page.dart';
 import 'package:catet_kas/pages/splash_page.dart';
-import 'package:catet_kas/pages/tambah_barang_page.dart';
+import 'package:catet_kas/pages/add_product_page.dart';
 import 'package:catet_kas/providers/auth_provider.dart';
+import 'package:catet_kas/providers/cart_provider.dart';
 import 'package:catet_kas/providers/product_provider.dart';
 import 'package:catet_kas/providers/shop_provider.dart';
 import 'package:catet_kas/providers/transaction_provider.dart';
-import 'package:catet_kas/widgets/loading_button.dart';
 import 'package:flutter/material.dart';
+import 'package:month_year_picker/month_year_picker.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 void main() => runApp(MyApp());
 
@@ -38,8 +40,16 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(
           create: (context) => TransactionProvider(),
         ),
+        ChangeNotifierProvider(
+          create: (context) => CartProvider(),
+        )
       ],
       child: MaterialApp(
+        localizationsDelegates: [
+          GlobalWidgetsLocalizations.delegate,
+          GlobalMaterialLocalizations.delegate,
+          MonthYearPickerLocalizations.delegate,
+        ],
         debugShowCheckedModeBanner: false,
         routes: {
           '/': (context) => SplashPage(),
@@ -50,8 +60,8 @@ class MyApp extends StatelessWidget {
           '/edit-shop-profile': (context) => EditShopProfilePage(),
           '/catat-pemasukan': (context) => CatatPemasukan(),
           '/catat-pengeluaran': (context) => CatatPengeluaran(),
-          '/daftar-barang': (context) => DaftarBarang(),
-          '/tambah-barang': (context) => TambahBarang(),
+          '/product-list': (context) => ProductList(),
+          '/add-product': (context) => AddProduct(),
           '/loading': (context) => LoadingPage(),
         },
       ),

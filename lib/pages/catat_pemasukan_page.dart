@@ -1,11 +1,15 @@
+import 'package:catet_kas/providers/cart_provider.dart';
 import 'package:catet_kas/theme.dart';
+import 'package:catet_kas/widgets/cart_card.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class CatatPemasukan extends StatelessWidget {
   const CatatPemasukan({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    CartProvider cartProvider = Provider.of<CartProvider>(context);
     Widget switchButton() {
       return Container(
         width: double.infinity,
@@ -70,7 +74,7 @@ class CatatPemasukan extends StatelessWidget {
         ),
         child: TextButton(
           onPressed: () {
-            Navigator.pushNamed(context, '/daftar-barang');
+            Navigator.pushNamed(context, '/product-list');
           },
           child: Text(
             '+ Tambah Barang Terjual',
@@ -173,6 +177,16 @@ class CatatPemasukan extends StatelessWidget {
           ),
           onPressed: () {},
         ),
+      );
+    }
+
+    Widget content() {
+      return ListView(
+        padding: EdgeInsets.symmetric(
+          horizontal: defaultMargin,
+        ),
+        children:
+            cartProvider.carts.map((cart) => CartCard(cart: cart)).toList(),
       );
     }
 

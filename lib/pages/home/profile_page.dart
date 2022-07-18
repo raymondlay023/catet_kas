@@ -3,17 +3,81 @@ import 'package:catet_kas/providers/auth_provider.dart';
 import 'package:catet_kas/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ProfilePage extends StatelessWidget {
-  const ProfilePage({Key? key}) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
     AuthProvider authProvider = Provider.of<AuthProvider>(context);
     UserModel user = authProvider.user;
 
-    Widget header() {
-      return AppBar(
+    handleSignOut() async {
+      if (await authProvider.logout(authProvider.user.token!)) {
+        Navigator.pushNamedAndRemoveUntil(
+            context, '/sign-in', (route) => false);
+      } else {
+        print('gagal sign out');
+      }
+    }
+
+    Widget menuItem(String text) {
+      return Container(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              text,
+              style: secondaryTextStyle.copyWith(
+                fontSize: 14,
+                color: thirdTextColor,
+              ),
+            ),
+            Icon(
+              Icons.chevron_right,
+              color: thirdTextColor,
+            ),
+          ],
+        ),
+      );
+    }
+
+    Widget content() {
+      return Container(
+        width: double.infinity,
+        padding: EdgeInsets.symmetric(
+          horizontal: defaultMargin,
+        ),
+        decoration: BoxDecoration(color: backgroundColor2),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(height: defaultMargin),
+            Text(
+              'Akun',
+              style: secondaryTextStyle.copyWith(
+                fontSize: 16,
+                fontWeight: bold,
+                color: cardColor,
+              ),
+            ),
+            SizedBox(height: 25),
+            GestureDetector(
+              onTap: (() => Navigator.pushNamed(context, '/edit-profile')),
+              child: menuItem('Edit Profil'),
+            ),
+            SizedBox(height: 15),
+            GestureDetector(
+              onTap: () => Navigator.pushNamed(context, '/edit-shop-profile'),
+              child: menuItem('Edit Profil Usaha'),
+            ),
+          ],
+        ),
+      );
+    }
+
+    return Scaffold(
+      appBar: AppBar(
+        toolbarHeight: 120,
         backgroundColor: backgroundColor4,
         automaticallyImplyLeading: false,
         elevation: 0,
@@ -52,8 +116,7 @@ class ProfilePage extends StatelessWidget {
                   ),
                 ),
                 GestureDetector(
-                  onTap: (() => Navigator.pushNamedAndRemoveUntil(
-                      context, '/sign-in', (route) => false)),
+                  onTap: handleSignOut,
                   child: Image.asset(
                     'assets/icon_logout.png',
                     width: 25,
@@ -63,71 +126,8 @@ class ProfilePage extends StatelessWidget {
             ),
           ),
         ),
-      );
-    }
-
-    Widget menuItem(String text) {
-      return Container(
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              text,
-              style: secondaryTextStyle.copyWith(
-                fontSize: 14,
-                color: thirdTextColor,
-              ),
-            ),
-            Icon(
-              Icons.chevron_right,
-              color: thirdTextColor,
-            ),
-          ],
-        ),
-      );
-    }
-
-    Widget content() {
-      return Expanded(
-        child: Container(
-          width: double.infinity,
-          padding: EdgeInsets.symmetric(
-            horizontal: defaultMargin,
-          ),
-          decoration: BoxDecoration(color: backgroundColor2),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(height: defaultMargin),
-              Text(
-                'Akun',
-                style: secondaryTextStyle.copyWith(
-                  fontSize: 16,
-                  fontWeight: bold,
-                  color: cardColor,
-                ),
-              ),
-              SizedBox(height: 25),
-              GestureDetector(
-                onTap: (() => Navigator.pushNamed(context, '/edit-profile')),
-                child: menuItem('Edit Profil'),
-              ),
-              SizedBox(height: 15),
-              GestureDetector(
-                onTap: () => Navigator.pushNamed(context, '/edit-shop-profile'),
-                child: menuItem('Edit Profil Usaha'),
-              ),
-            ],
-          ),
-        ),
-      );
-    }
-
-    return Column(
-      children: [
-        header(),
-        content(),
-      ],
+      ),
+      body: content(),
     );
   }
 }

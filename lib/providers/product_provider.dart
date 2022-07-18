@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:catet_kas/models/product_model.dart';
 import 'package:catet_kas/services/product_service.dart';
 import 'package:flutter/cupertino.dart';
@@ -37,6 +39,29 @@ class ProductProvider with ChangeNotifier {
   }) async {
     try {
       ProductModel product = await ProductService().update();
+      _product = product;
+      return true;
+    } catch (e) {
+      print(e);
+      return false;
+    }
+  }
+
+  Future<bool> createProduct({
+    required String token,
+    required String name,
+    required double price,
+    double capital = 0,
+    double stock = 0,
+  }) async {
+    try {
+      ProductModel product = await ProductService().create(
+        token: token,
+        name: name,
+        price: price,
+        capital: capital,
+        stock: stock,
+      );
       _product = product;
       return true;
     } catch (e) {
