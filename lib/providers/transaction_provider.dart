@@ -21,29 +21,51 @@ class TransactionProvider with ChangeNotifier {
     }
   }
 
-  totalPemasukan([DateTime? tanggal]) {
+  double totalTransaksi([String? tipe, DateTime? tanggal]) {
     double total = 0;
-    if (tanggal != null) {
+    if (tanggal != null && tipe != null) {
       for (var item in _transactions.where((element) =>
-          element.type == 'PEMASUKAN' &&
-          element.createdAt!.month == tanggal.month)) {
+          element.type == tipe && element.createdAt!.month == tanggal.month)) {
+        total += (item.total!);
+      }
+    } else if (tanggal != null) {
+      for (var item
+          in _transactions.where((element) => element.createdAt! == tanggal)) {
+        total += (item.total!);
+      }
+    } else if (tipe != null) {
+      for (var item in _transactions.where((element) => element.type == tipe)) {
         total += (item.total!);
       }
     } else {
-      for (var item
-          in _transactions.where((element) => element.type == 'PEMASUKAN')) {
+      for (var item in _transactions) {
         total += (item.total!);
       }
     }
     return total;
   }
 
-  totalPengeluaran() {
+  double gainLoss([DateTime? tanggal]) {
     double total = 0;
-    for (var item
-        in _transactions.where((element) => element.type == 'PENGELUARAN')) {
-      total += (item.total!);
+    if (tanggal != null) {
+      for (var item
+          in _transactions.where((element) => element.createdAt! == tanggal)) {
+        if (item.type == 'PEMASUKAN') {
+          total += (item.total!);
+        } else {
+          total -= (item.total!);
+        }
+      }
+    } else {
+      for (var item in _transactions) {
+        if (item.type == 'PEMASUKAN') {
+          total += (item.total!);
+        } else {
+          total -= (item.total!);
+        }
+      }
     }
+
     return total;
   }
 }

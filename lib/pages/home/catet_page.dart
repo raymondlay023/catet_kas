@@ -1,4 +1,3 @@
-import 'package:catet_kas/providers/auth_provider.dart';
 import 'package:catet_kas/providers/transaction_provider.dart';
 import 'package:catet_kas/theme.dart';
 import 'package:catet_kas/widgets/transaction_card.dart';
@@ -7,6 +6,7 @@ import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:grouped_list/grouped_list.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class CatetPage extends StatefulWidget {
   const CatetPage({Key? key}) : super(key: key);
@@ -15,22 +15,27 @@ class CatetPage extends StatefulWidget {
 }
 
 class _CatetPageState extends State<CatetPage> {
+  late Future<dynamic> dataFuture;
+  @override
   void initState() {
     super.initState();
-    getInit();
+    dataFuture = getData();
   }
 
-  getInit() async {
-    AuthProvider authProvider =
-        Provider.of<AuthProvider>(context, listen: false);
+  Future<dynamic> getData() async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token');
     await Provider.of<TransactionProvider>(context, listen: false)
-        .getTransactions(authProvider.user.token!);
+        .getTransactions(token!);
+    return TransactionProvider().transactions;
   }
 
   @override
   Widget build(BuildContext context) {
     TransactionProvider transactionProvider =
         Provider.of<TransactionProvider>(context);
+
+    double gainLossTotal = transactionProvider.gainLoss();
 
     Widget emptyState() {
       return Container(
@@ -53,11 +58,11 @@ class _CatetPageState extends State<CatetPage> {
     Widget summaryCard() {
       return Container(
         width: 340,
-        height: 150,
-        margin: EdgeInsets.only(
+        height: 160,
+        margin: const EdgeInsets.only(
           top: 20,
         ),
-        padding: EdgeInsets.symmetric(
+        padding: const EdgeInsets.symmetric(
           horizontal: 20,
           vertical: 15,
         ),
@@ -78,9 +83,9 @@ class _CatetPageState extends State<CatetPage> {
                         fontSize: 12,
                       ),
                     ),
-                    SizedBox(height: 7),
+                    const SizedBox(height: 7),
                     Text(
-                      'Rp. 1.000.000',
+                      '\Rp. ${transactionProvider.totalTransaksi('PEMASUKAN')}',
                       style: primaryTextStyle.copyWith(
                         color: pemasukanColor,
                         fontSize: 14,
@@ -104,9 +109,9 @@ class _CatetPageState extends State<CatetPage> {
                         fontSize: 12,
                       ),
                     ),
-                    SizedBox(height: 7),
+                    const SizedBox(height: 7),
                     Text(
-                      'Rp. 500.000',
+                      'Rp. ${transactionProvider.totalTransaksi('PENGELUARAN')}',
                       style: primaryTextStyle.copyWith(
                         color: pengeluaranColor,
                         fontSize: 14,
@@ -117,32 +122,38 @@ class _CatetPageState extends State<CatetPage> {
                 ),
               ],
             ),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             Container(
-              padding: EdgeInsets.symmetric(vertical: 10, horizontal: 35),
+              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 35),
               width: double.infinity,
-              height: 40,
+              height: 50,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(15),
-                color: pemasukanColor.withOpacity(0.25),
+                color: gainLossTotal.isNegative
+                    ? pengeluaranColor.withOpacity(0.25)
+                    : pemasukanColor.withOpacity(0.25),
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    'Untung',
+                    gainLossTotal.isNegative ? 'Rugi' : 'Untung',
                     style: primaryTextStyle.copyWith(
-                      fontSize: 12,
+                      fontSize: 16,
                       fontWeight: bold,
-                      color: pemasukanColor,
+                      color: gainLossTotal.isNegative
+                          ? pengeluaranColor
+                          : pemasukanColor,
                     ),
                   ),
                   Text(
-                    'Rp. 500.000',
+                    '\Rp. ${gainLossTotal.abs()}',
                     style: primaryTextStyle.copyWith(
-                      fontSize: 12,
+                      fontSize: 16,
                       fontWeight: bold,
-                      color: pemasukanColor,
+                      color: gainLossTotal.isNegative
+                          ? pengeluaranColor
+                          : pemasukanColor,
                     ),
                   ),
                 ],
@@ -154,153 +165,168 @@ class _CatetPageState extends State<CatetPage> {
     }
 
     Widget laporanKeuanganButton() {
-      return Container(
-        width: 180,
-        height: 50,
-        margin: EdgeInsets.only(top: 15),
-        decoration: BoxDecoration(
-          border: Border.all(color: buttonColor),
-          borderRadius: BorderRadius.circular(15),
-        ),
-        child: TextButton(
-          onPressed: () {},
-          child: Text(
-            'Laporan Keuangan',
-            style: primaryTextStyle.copyWith(
-              color: buttonColor,
-              fontWeight: bold,
+      return Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            width: 180,
+            height: 50,
+            margin: const EdgeInsets.only(top: 15),
+            decoration: BoxDecoration(
+              border: Border.all(color: buttonColor),
+              borderRadius: BorderRadius.circular(15),
+            ),
+            child: TextButton(
+              onPressed: () {},
+              child: Text(
+                'Laporan Keuangan',
+                style: primaryTextStyle.copyWith(
+                  color: buttonColor,
+                  fontWeight: bold,
+                ),
+              ),
             ),
           ),
-        ),
+        ],
       );
     }
 
     Widget cari() {
-      return Container(
-        margin: EdgeInsets.only(top: 15),
-        width: 320,
-        height: 55,
-        child: Row(
-          children: [
-            Container(
-              height: 45,
-              width: 230,
-              padding: EdgeInsets.symmetric(
-                horizontal: 10,
-                vertical: 12,
-              ),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(5),
-                border: Border.all(
-                  color: primaryTextColor,
-                ),
-              ),
-              child: TextFormField(
-                decoration: InputDecoration.collapsed(
-                  hintText: 'Cari',
-                ),
-              ),
-            ),
-            SizedBox(
-              width: 20,
-            ),
-            Container(
-              height: 45,
-              width: 70,
-              decoration: BoxDecoration(
-                color: buttonColor,
-                borderRadius: BorderRadius.circular(5),
-              ),
-              child: TextButton(
-                onPressed: () {},
-                child: Text(
-                  'Cari',
-                  style: secondaryTextStyle.copyWith(
-                    color: primaryTextColor,
-                    fontWeight: bold,
+      return Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            margin: const EdgeInsets.only(top: 15),
+            width: 320,
+            height: 55,
+            child: Row(
+              children: [
+                Container(
+                  height: 45,
+                  width: 230,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 12,
+                  ),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(5),
+                    border: Border.all(
+                      color: primaryTextColor,
+                    ),
+                  ),
+                  child: TextFormField(
+                    decoration: const InputDecoration.collapsed(
+                      hintText: 'Cari',
+                    ),
                   ),
                 ),
-              ),
+                const SizedBox(
+                  width: 20,
+                ),
+                Container(
+                  height: 45,
+                  width: 70,
+                  decoration: BoxDecoration(
+                    color: buttonColor,
+                    borderRadius: BorderRadius.circular(5),
+                  ),
+                  child: TextButton(
+                    onPressed: () {},
+                    child: Text(
+                      'Cari',
+                      style: secondaryTextStyle.copyWith(
+                        color: primaryTextColor,
+                        fontWeight: bold,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
       );
     }
 
-    Widget headerListTransaksi() {
-      return Container(
-        margin: EdgeInsets.only(top: 7),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            Text(
-              'Catatan',
-              style: primaryTextStyle.copyWith(
-                fontSize: 12,
-                color: Colors.black,
-              ),
-            ),
-            Text(
-              'Transaksi',
-              style: primaryTextStyle.copyWith(
-                fontSize: 12,
-                color: Colors.black,
-              ),
-            ),
-          ],
-        ),
-      );
-    }
-
-    Widget content() {
-      // return Column(
-      //   children: [
-      //     summaryCard(),
-      //     laporanKeuanganButton(),
-      //     cari(),
-      //
-      //   ],
-      // );
+    Widget transactions() {
       return Expanded(
         child: Container(
-          margin: EdgeInsets.only(top: 10),
-          padding: EdgeInsets.all(15),
+          width: MediaQuery.of(context).size.width,
+          margin: const EdgeInsets.only(top: 10),
+          padding: const EdgeInsets.all(15),
           decoration: BoxDecoration(borderRadius: BorderRadius.circular(15)),
           child: GroupedListView<dynamic, String>(
-            separator: Divider(height: 5),
+            separator: const Divider(height: 5),
             shrinkWrap: true,
             itemComparator: (item1, item2) => item1.note.compareTo(item2.note),
             groupComparator: (value1, value2) => value2.compareTo(value1),
             elements: transactionProvider.transactions,
-            groupBy: (element) =>
-                DateFormat('dd-MM-yyyy').format(element.createdAt),
-            groupSeparatorBuilder: (value) => Column(
+            groupBy: (element) => element.createdAt.toString(),
+            //header list transaksi
+            groupHeaderBuilder: (value) => Column(
               children: [
                 Container(
                   width: 330,
-                  padding: const EdgeInsets.symmetric(vertical: 15),
-                  color: Colors.black.withAlpha(50),
+                  padding: const EdgeInsets.all(15),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    color: Colors.black.withAlpha(25),
+                  ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
-                        value.toString(),
-                        style: primaryTextStyle.copyWith(
-                          fontSize: 14,
-                          color: primaryTextColor,
+                      Container(
+                        alignment: Alignment.center,
+                        width: 115,
+                        child: Text(
+                          DateFormat('dd-MMM-yyyy').format(value.createdAt),
+                          style: primaryTextStyle.copyWith(
+                            fontSize: 14,
+                            color: primaryTextColor,
+                          ),
                         ),
                       ),
-                      Text(
-                        '\$1000',
-                        style: primaryTextStyle.copyWith(
-                          fontSize: 14,
-                          color: alertColor,
+                      Container(
+                        alignment: Alignment.center,
+                        width: 115,
+                        child: Text(
+                          '\R\p. ${transactionProvider.gainLoss(value.createdAt).abs()}',
+                          style: primaryTextStyle.copyWith(
+                            fontSize: 14,
+                            color: transactionProvider
+                                    .gainLoss(value.createdAt)
+                                    .isNegative
+                                ? alertColor
+                                : pemasukanColor,
+                          ),
                         ),
                       ),
                     ],
                   ),
                 ),
-                headerListTransaksi(),
+                // column transaksi
+                Container(
+                  margin: const EdgeInsets.only(top: 7),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      Text(
+                        'Catatan',
+                        style: primaryTextStyle.copyWith(
+                          fontSize: 12,
+                          color: Colors.black,
+                        ),
+                      ),
+                      Text(
+                        'Transaksi',
+                        style: primaryTextStyle.copyWith(
+                          fontSize: 12,
+                          color: Colors.black,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ],
             ),
             itemBuilder: (context, element) => TransactionCard(element),
@@ -309,17 +335,35 @@ class _CatetPageState extends State<CatetPage> {
       );
     }
 
-    Widget transaksi() {
-      return Column(
-        children: transactionProvider.transactions
-            .map((transaction) => TransactionCard(transaction))
-            .toList(),
+    Widget transactionList() {
+      return Container(
+        width: double.infinity,
+        height: MediaQuery.of(context).size.width / 2,
+        child: FutureBuilder(
+          future: dataFuture,
+          builder: (context, snapshot) {
+            switch (snapshot.connectionState) {
+              case ConnectionState.waiting:
+                return const Center(child: CircularProgressIndicator());
+              case ConnectionState.done:
+              default:
+                if (snapshot.hasError) {
+                  return const Center(child: Text('error :'));
+                } else if (snapshot.hasData) {
+                  return Expanded(
+                    child: transactions(),
+                  );
+                } else {
+                  return const Text('something went wrong!');
+                }
+            }
+          },
+        ),
       );
     }
 
-    return Scaffold(
-      backgroundColor: backgroundColor1,
-      appBar: AppBar(
+    PreferredSizeWidget customAppBar() {
+      return AppBar(
         automaticallyImplyLeading: false,
         toolbarHeight: 75,
         title: Text(
@@ -331,19 +375,14 @@ class _CatetPageState extends State<CatetPage> {
         ),
         centerTitle: true,
         backgroundColor: primaryColor,
-      ),
-      body: Column(
-        children: [
-          summaryCard(),
-          laporanKeuanganButton(),
-          cari(),
-          content(),
-        ],
-      ),
-      floatingActionButton: SpeedDial(
+      );
+    }
+
+    Widget customFloatingButton() {
+      return SpeedDial(
         animatedIcon: AnimatedIcons.menu_close,
-        activeLabel: Text('Catat'),
-        animatedIconTheme: IconThemeData.fallback(),
+        activeLabel: const Text('Catat'),
+        animatedIconTheme: const IconThemeData.fallback(),
         backgroundColor: buttonColor,
         overlayColor: Colors.black,
         overlayOpacity: 0.4,
@@ -351,22 +390,29 @@ class _CatetPageState extends State<CatetPage> {
         children: [
           SpeedDialChild(
             onTap: () {
-              Navigator.pushNamed(context, '/catat-pemasukan');
+              Navigator.pushNamed(context, '/catat-transaksi');
             },
-            child: Icon(Icons.arrow_circle_down),
-            label: 'Pemasukan',
+            child: const Icon(Icons.create_outlined),
+            label: 'Catat Transaksi',
             backgroundColor: pemasukanColor,
           ),
-          SpeedDialChild(
-            onTap: () {
-              Navigator.pushNamed(context, '/catat-pengeluaran');
-            },
-            child: Icon(Icons.arrow_circle_up),
-            label: 'Pengeluaran',
-            backgroundColor: pengeluaranColor,
-          ),
+        ],
+      );
+    }
+
+    return Scaffold(
+      backgroundColor: backgroundColor1,
+      appBar: customAppBar(),
+      body: ListView(
+        padding: EdgeInsets.symmetric(horizontal: defaultMargin),
+        children: [
+          summaryCard(),
+          laporanKeuanganButton(),
+          cari(),
+          transactionList(),
         ],
       ),
+      floatingActionButton: customFloatingButton(),
     );
   }
 }

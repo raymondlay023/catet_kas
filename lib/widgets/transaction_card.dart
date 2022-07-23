@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 
 class TransactionCard extends StatelessWidget {
   final TransactionModel transaction;
-  TransactionCard(this.transaction);
+  const TransactionCard(this.transaction);
   @override
   Widget build(BuildContext context) {
     // return Card(
@@ -15,8 +15,8 @@ class TransactionCard extends StatelessWidget {
     //   ),
     // );
     return Container(
-      decoration: BoxDecoration(),
-      padding: EdgeInsets.symmetric(vertical: 12),
+      decoration: const BoxDecoration(),
+      padding: const EdgeInsets.symmetric(vertical: 12),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [

@@ -9,7 +9,7 @@ class LoadingButton extends StatelessWidget {
     return Container(
       height: 40,
       width: double.infinity,
-      margin: EdgeInsets.only(
+      margin: const EdgeInsets.only(
         top: 30,
         bottom: 50,
       ),
@@ -24,7 +24,7 @@ class LoadingButton extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Container(
+            SizedBox(
               width: 16,
               height: 16,
               child: CircularProgressIndicator(
@@ -34,7 +34,7 @@ class LoadingButton extends StatelessWidget {
                 ),
               ),
             ),
-            SizedBox(width: 4),
+            const SizedBox(width: 4),
             Text(
               'Loading',
               style: secondaryTextStyle.copyWith(

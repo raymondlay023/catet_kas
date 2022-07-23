@@ -1,27 +1,29 @@
-import 'package:catet_kas/providers/auth_provider.dart';
 import 'package:catet_kas/providers/product_provider.dart';
 import 'package:catet_kas/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AddProduct extends StatelessWidget {
   // const AddProduct({Key? key}) : super(key: key);
 
   TextEditingController namaBarangController = TextEditingController(text: '');
   TextEditingController hargaJualController = TextEditingController(text: '');
-  TextEditingController kategoriController = TextEditingController(text: '');
+  TextEditingController modalController = TextEditingController(text: '');
   TextEditingController stokController = TextEditingController(text: '');
 
   @override
   Widget build(BuildContext context) {
-    AuthProvider authProvider = Provider.of<AuthProvider>(context);
     ProductProvider productProvider = Provider.of<ProductProvider>(context);
 
     handleAddProduct() async {
+      final prefs = await SharedPreferences.getInstance();
+      final token = prefs.getString('token');
       if (await productProvider.createProduct(
-        token: authProvider.user.token!,
+        token: token!,
         name: namaBarangController.text,
         price: double.parse(hargaJualController.text),
+        capital: double.parse(modalController.text),
         stock: double.parse(stokController.text),
       )) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -36,7 +38,7 @@ class AddProduct extends StatelessWidget {
             ),
           ),
         );
-        // Navigator.popAndPushNamed(context, '/catet-pemasukan');
+        Navigator.popAndPushNamed(context, 'product-list');
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -60,7 +62,7 @@ class AddProduct extends StatelessWidget {
           Container(
             width: double.infinity,
             alignment: Alignment.center,
-            padding: EdgeInsets.symmetric(
+            padding: const EdgeInsets.symmetric(
               horizontal: 20,
             ),
             child: TextFormField(
@@ -70,7 +72,7 @@ class AddProduct extends StatelessWidget {
                 floatingLabelStyle: secondaryTextStyle.copyWith(
                   color: primaryColor,
                 ),
-                label: Text('Nama Barang'),
+                label: const Text('Nama Barang'),
                 enabledBorder: OutlineInputBorder(
                   borderSide: BorderSide(
                     color: thirdTextColor,
@@ -95,7 +97,7 @@ class AddProduct extends StatelessWidget {
           Container(
             width: double.infinity,
             alignment: Alignment.center,
-            padding: EdgeInsets.symmetric(
+            padding: const EdgeInsets.symmetric(
               horizontal: 20,
             ),
             child: TextFormField(
@@ -105,7 +107,7 @@ class AddProduct extends StatelessWidget {
                 floatingLabelStyle: secondaryTextStyle.copyWith(
                   color: primaryColor,
                 ),
-                label: Text('Harga Jual'),
+                label: const Text('Harga Jual'),
                 enabledBorder: OutlineInputBorder(
                   borderSide: BorderSide(
                     color: thirdTextColor,
@@ -123,24 +125,24 @@ class AddProduct extends StatelessWidget {
       );
     }
 
-    Widget inputKategori() {
+    Widget inputModal() {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
             width: double.infinity,
             alignment: Alignment.center,
-            padding: EdgeInsets.symmetric(
+            padding: const EdgeInsets.symmetric(
               horizontal: 20,
             ),
             child: TextFormField(
-              controller: kategoriController,
+              controller: modalController,
               cursorColor: primaryColor,
               decoration: InputDecoration(
                 floatingLabelStyle: secondaryTextStyle.copyWith(
                   color: primaryColor,
                 ),
-                label: Text('Kategori'),
+                label: const Text('Modal'),
                 enabledBorder: OutlineInputBorder(
                   borderSide: BorderSide(
                     color: thirdTextColor,
@@ -165,7 +167,7 @@ class AddProduct extends StatelessWidget {
           Container(
             width: double.infinity,
             alignment: Alignment.center,
-            padding: EdgeInsets.symmetric(
+            padding: const EdgeInsets.symmetric(
               horizontal: 20,
             ),
             child: TextFormField(
@@ -175,7 +177,7 @@ class AddProduct extends StatelessWidget {
                 floatingLabelStyle: secondaryTextStyle.copyWith(
                   color: primaryColor,
                 ),
-                label: Text('Stok Barang'),
+                label: const Text('Stok Barang'),
                 enabledBorder: OutlineInputBorder(
                   borderSide: BorderSide(
                     color: thirdTextColor,
@@ -218,7 +220,7 @@ class AddProduct extends StatelessWidget {
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      backgroundColor: backgroundColor1,
+      backgroundColor: Colors.white,
       appBar: AppBar(
         toolbarHeight: 65,
         backgroundColor: primaryColor,
@@ -237,15 +239,15 @@ class AddProduct extends StatelessWidget {
         ),
         child: Column(
           children: [
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             inputNamaBarang(),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             inputHargaJual(),
-            SizedBox(height: 20),
-            inputKategori(),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
+            inputModal(),
+            const SizedBox(height: 20),
             inputStokBarang(),
-            Spacer(),
+            const Spacer(),
             buttonSimpan(),
           ],
         ),

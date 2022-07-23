@@ -10,7 +10,7 @@ class EditBarang extends StatelessWidget {
       return Column(
         children: [
           Container(
-            margin: EdgeInsets.all(10),
+            margin: const EdgeInsets.all(10),
           ),
         ],
       );
@@ -20,11 +20,11 @@ class EditBarang extends StatelessWidget {
       appBar: AppBar(
         elevation: 0,
         backgroundColor: primaryColor,
-        title: Text('Edit barang'),
+        title: const Text('Edit barang'),
       ),
       body: Container(
         margin: EdgeInsets.all(defaultMargin),
-        padding: EdgeInsets.all(5),
+        padding: const EdgeInsets.all(5),
       ),
     );
   }

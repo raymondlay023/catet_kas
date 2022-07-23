@@ -32,7 +32,7 @@ class _SignInPageState extends State<SignInPage> {
       } else {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           backgroundColor: alertColor,
-          content: Text(
+          content: const Text(
             'Gagal Login!',
             textAlign: TextAlign.center,
           ),
@@ -57,7 +57,7 @@ class _SignInPageState extends State<SignInPage> {
                 fontWeight: regular,
               ),
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             Container(
               height: 40,
               decoration: BoxDecoration(
@@ -94,7 +94,7 @@ class _SignInPageState extends State<SignInPage> {
 
     Widget emailInput() {
       return Container(
-        margin: EdgeInsets.only(top: 40),
+        margin: const EdgeInsets.only(top: 40),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -105,7 +105,7 @@ class _SignInPageState extends State<SignInPage> {
                 fontWeight: regular,
               ),
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             Container(
               height: 40,
               decoration: BoxDecoration(
@@ -156,7 +156,7 @@ class _SignInPageState extends State<SignInPage> {
                 fontWeight: bold,
               ),
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -208,7 +208,7 @@ class _SignInPageState extends State<SignInPage> {
       return Container(
         height: 40,
         width: double.infinity,
-        margin: EdgeInsets.only(
+        margin: const EdgeInsets.only(
           top: 30,
         ),
         child: TextButton(
@@ -234,7 +234,7 @@ class _SignInPageState extends State<SignInPage> {
       body: SafeArea(
         child: SingleChildScrollView(
           child: Container(
-            margin: EdgeInsets.symmetric(
+            margin: const EdgeInsets.symmetric(
               horizontal: 40,
             ),
             child: Column(

@@ -29,19 +29,22 @@ class CartProvider with ChangeNotifier {
   }
 
   removeCart(int id) {
-    _carts.removeAt(id);
+    int index = _carts.indexWhere((element) => element.id == id);
+    _carts.removeAt(index);
     notifyListeners();
   }
 
   addQuantity(int id) {
-    _carts[id].quantity++;
+    int index = _carts.indexWhere((element) => element.id == id);
+    _carts[index].quantity++;
     notifyListeners();
   }
 
   reduceQuantity(int id) {
-    _carts[id].quantity--;
-    if (_carts[id].quantity == 0) {
-      _carts.removeAt(id);
+    int index = _carts.indexWhere((element) => element.id == id);
+    _carts[index].quantity--;
+    if (_carts[index].quantity == 0) {
+      _carts.removeAt(index);
     }
     notifyListeners();
   }

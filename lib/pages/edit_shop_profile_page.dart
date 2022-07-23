@@ -1,6 +1,4 @@
 import 'package:catet_kas/models/shop_model.dart';
-import 'package:catet_kas/models/user_model.dart';
-import 'package:catet_kas/providers/auth_provider.dart';
 import 'package:catet_kas/providers/shop_provider.dart';
 import 'package:catet_kas/theme.dart';
 import 'package:flutter/material.dart';
@@ -14,21 +12,17 @@ class EditShopProfilePage extends StatefulWidget {
   State<EditShopProfilePage> createState() => _EditShopProfilePageState();
 }
 
-late String _token;
-
 class _EditShopProfilePageState extends State<EditShopProfilePage> {
+  @override
   void initState() {
     super.initState();
-    getInit();
+    getData();
   }
 
-  getInit() async {
+  getData() async {
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('token');
-    setState(() {
-      _token = token!;
-    });
-    print(_token);
+    ShopProvider().getShop(token!);
   }
 
   @override
@@ -44,8 +38,10 @@ class _EditShopProfilePageState extends State<EditShopProfilePage> {
         TextEditingController(text: shop.phoneNumber);
 
     handleUpdateShop() async {
+      final prefs = await SharedPreferences.getInstance();
+      final token = prefs.getString('token');
       if (await shopProvider.update(
-        token: _token,
+        token: token!,
         name: nameController.text,
         category: categoryController.text,
         phoneNumber: phoneNumberController.text,
@@ -62,7 +58,8 @@ class _EditShopProfilePageState extends State<EditShopProfilePage> {
             ),
           ),
         );
-        Navigator.restorablePopAndPushNamed(context, '/home');
+        Navigator.pushNamedAndRemoveUntil(
+            context, '/edit-shop-profile', ModalRoute.withName('/home'));
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -203,7 +200,7 @@ class _EditShopProfilePageState extends State<EditShopProfilePage> {
             Container(
               width: 100,
               height: 100,
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 shape: BoxShape.circle,
                 image: DecorationImage(
                   image: AssetImage(
@@ -212,7 +209,7 @@ class _EditShopProfilePageState extends State<EditShopProfilePage> {
                 ),
               ),
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             inputNamaUsaha(),
             inputKategoriUsaha(),
             inputNomorTelepon(),
@@ -230,7 +227,7 @@ class _EditShopProfilePageState extends State<EditShopProfilePage> {
           onPressed: () {
             Navigator.pop(context);
           },
-          icon: Icon(Icons.close),
+          icon: const Icon(Icons.close),
         ),
         title: Text(
           'Edit Profil Usaha',
@@ -243,7 +240,7 @@ class _EditShopProfilePageState extends State<EditShopProfilePage> {
         actions: [
           IconButton(
             onPressed: handleUpdateShop,
-            icon: Icon(Icons.check),
+            icon: const Icon(Icons.check),
           ),
         ],
       ),

@@ -5,14 +5,35 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class ProfilePage extends StatelessWidget {
+class ProfilePage extends StatefulWidget {
+  @override
+  State<ProfilePage> createState() => _ProfilePageState();
+}
+
+class _ProfilePageState extends State<ProfilePage> {
+  // late Future<dynamic> dataFuture;
+  @override
+  void initState() {
+    super.initState();
+    getData();
+    // dataFuture = getData();
+  }
+
+  getData() async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token');
+    await Provider.of<AuthProvider>(context, listen: false).getUser(token!);
+  }
+
   @override
   Widget build(BuildContext context) {
     AuthProvider authProvider = Provider.of<AuthProvider>(context);
     UserModel user = authProvider.user;
 
     handleSignOut() async {
-      if (await authProvider.logout(authProvider.user.token!)) {
+      final prefs = await SharedPreferences.getInstance();
+      final token = prefs.getString('token');
+      if (await authProvider.logout(token!)) {
         Navigator.pushNamedAndRemoveUntil(
             context, '/sign-in', (route) => false);
       } else {
@@ -21,23 +42,21 @@ class ProfilePage extends StatelessWidget {
     }
 
     Widget menuItem(String text) {
-      return Container(
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              text,
-              style: secondaryTextStyle.copyWith(
-                fontSize: 14,
-                color: thirdTextColor,
-              ),
-            ),
-            Icon(
-              Icons.chevron_right,
+      return Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            text,
+            style: secondaryTextStyle.copyWith(
+              fontSize: 14,
               color: thirdTextColor,
             ),
-          ],
-        ),
+          ),
+          Icon(
+            Icons.chevron_right,
+            color: thirdTextColor,
+          ),
+        ],
       );
     }
 
@@ -60,12 +79,12 @@ class ProfilePage extends StatelessWidget {
                 color: cardColor,
               ),
             ),
-            SizedBox(height: 25),
+            const SizedBox(height: 25),
             GestureDetector(
               onTap: (() => Navigator.pushNamed(context, '/edit-profile')),
               child: menuItem('Edit Profil'),
             ),
-            SizedBox(height: 15),
+            const SizedBox(height: 15),
             GestureDetector(
               onTap: () => Navigator.pushNamed(context, '/edit-shop-profile'),
               child: menuItem('Edit Profil Usaha'),
@@ -75,58 +94,87 @@ class ProfilePage extends StatelessWidget {
       );
     }
 
-    return Scaffold(
-      appBar: AppBar(
+    Widget profileData() {
+      return Container(
+        width: double.infinity,
+        padding: EdgeInsets.all(defaultMargin),
+        child: Row(
+          children: [
+            ClipOval(
+              child: Image.asset(
+                'assets/image_profile.png',
+                width: 75,
+              ),
+            ),
+            const SizedBox(width: 20),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Hallo, ${user.name}',
+                    style: primaryTextStyle.copyWith(
+                      fontSize: 20,
+                      color: cardColor,
+                    ),
+                  ),
+                  Text(
+                    '@${user.username}',
+                    style: primaryTextStyle.copyWith(
+                      fontSize: 16,
+                      color: thirdTextColor,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            GestureDetector(
+              onTap: handleSignOut,
+              child: Image.asset(
+                'assets/icon_logout.png',
+                width: 25,
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
+    // Widget builder() {
+    //   return FutureBuilder(
+    //     future: dataFuture,
+    //     builder: (context, snapshot) {
+    //       switch (snapshot.connectionState) {
+    //         case ConnectionState.waiting:
+    //           return const Center(child: CircularProgressIndicator());
+    //         case ConnectionState.done:
+    //         default:
+    //           if (snapshot.hasError) {
+    //             return const Center(child: Text('error :'));
+    //           } else if (snapshot.hasData) {
+    //             return profileData();
+    //           } else {
+    //             return const Center(child: CircularProgressIndicator());
+    //           }
+    //       }
+    //     },
+    //   );
+    // }
+
+    PreferredSizeWidget customAppbar() {
+      return AppBar(
         toolbarHeight: 120,
         backgroundColor: backgroundColor4,
         automaticallyImplyLeading: false,
         elevation: 0,
         flexibleSpace: SafeArea(
-          child: Container(
-            width: double.infinity,
-            padding: EdgeInsets.all(defaultMargin),
-            child: Row(
-              children: [
-                ClipOval(
-                  child: Image.asset(
-                    'assets/image_profile.png',
-                    width: 75,
-                  ),
-                ),
-                SizedBox(width: 20),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Hallo, ${user.name}',
-                        style: primaryTextStyle.copyWith(
-                          fontSize: 20,
-                          color: cardColor,
-                        ),
-                      ),
-                      Text(
-                        '@${user.username}',
-                        style: primaryTextStyle.copyWith(
-                          fontSize: 16,
-                          color: thirdTextColor,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                GestureDetector(
-                  onTap: handleSignOut,
-                  child: Image.asset(
-                    'assets/icon_logout.png',
-                    width: 25,
-                  ),
-                ),
-              ],
-            ),
-          ),
+          child: profileData(),
         ),
-      ),
+      );
+    }
+
+    return Scaffold(
+      appBar: customAppbar(),
       body: content(),
     );
   }

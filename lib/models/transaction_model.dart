@@ -1,4 +1,4 @@
-import 'package:intl/intl.dart';
+import 'package:catet_kas/models/transaction_item_model.dart';
 
 class TransactionModel {
   late int? id;
@@ -6,6 +6,7 @@ class TransactionModel {
   late double? total;
   late String? type;
   late DateTime? createdAt;
+  late List<dynamic>? items;
   // late DateTime? updatedAt;
 
   TransactionModel({
@@ -15,6 +16,7 @@ class TransactionModel {
     this.type,
     this.createdAt,
     // this.updatedAt,
+    this.items,
   });
 
   TransactionModel.fromJson(Map<String, dynamic> json) {
@@ -24,6 +26,7 @@ class TransactionModel {
     type = json['type'];
     createdAt = DateTime.parse(json['created_at']);
     // updatedAt = DateTime.parse(json['updated_at']);
+    items = json['items'];
   }
 
   Map<String, dynamic> toJson() {
@@ -34,6 +37,7 @@ class TransactionModel {
       'type': type,
       'created_at': createdAt.toString(),
       // 'updated_at': updatedAt.toString(),
+      'items': items,
     };
   }
 }

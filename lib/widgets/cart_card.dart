@@ -1,7 +1,6 @@
 import 'package:catet_kas/models/cart_model.dart';
 import 'package:catet_kas/providers/cart_provider.dart';
 import 'package:catet_kas/theme.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -16,19 +15,23 @@ class CartCard extends StatelessWidget {
   Widget build(BuildContext context) {
     CartProvider cartProvider = Provider.of<CartProvider>(context);
     return Container(
-      margin: EdgeInsets.only(top: defaultMargin),
-      padding: EdgeInsets.symmetric(
-        horizontal: 16,
-        vertical: 10,
-      ),
+      margin: const EdgeInsets.all(5),
+      padding: const EdgeInsets.all(15),
       decoration: BoxDecoration(
         color: backgroundColor1,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(10),
       ),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
+              // Text(
+              //   '${cart.quantity}x',
+              //   style: primaryTextStyle.copyWith(
+              //       color: primaryTextColor.withOpacity(0.5)),
+              // ),
+              SizedBox(width: 20),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -37,58 +40,43 @@ class CartCard extends StatelessWidget {
                       cart.product.name!,
                       style: primaryTextStyle.copyWith(
                         fontWeight: semiBold,
+                        color: primaryTextColor,
                       ),
                     ),
-                    Text('\$${cart.product.price}',
-                        style: TextStyle(color: Colors.black)),
+                    Text(
+                      'Rp.${cart.product.price}',
+                      style: primaryTextStyle.copyWith(
+                          color: primaryTextColor.withOpacity(0.5)),
+                    ),
                   ],
                 ),
               ),
-              Column(
+              Row(
                 children: [
-                  GestureDetector(
-                    onTap: cartProvider.addQuantity(cart.id),
-                    child: Icon(Icons.add_circle_outline),
+                  IconButton(
+                    padding: EdgeInsets.zero,
+                    iconSize: 25,
+                    splashRadius: 15,
+                    onPressed: () => cartProvider.reduceQuantity(cart.id),
+                    icon: const Icon(Icons.remove_circle_outline),
                   ),
-                  SizedBox(height: 2),
-                  Text(
-                    cart.quantity.toString(),
-                    style: primaryTextStyle.copyWith(
-                      fontWeight: medium,
-                    ),
-                  ),
-                  SizedBox(height: 2),
-                  GestureDetector(
-                    onTap: cartProvider.reduceQuantity(cart.id),
-                    child: Icon(Icons.remove_circle_outline),
+                  Text('${cart.quantity}'),
+                  IconButton(
+                    padding: EdgeInsets.zero,
+                    iconSize: 25,
+                    splashRadius: 15,
+                    onPressed: () => cartProvider.addQuantity(cart.id),
+                    icon: const Icon(Icons.add_circle_outline),
                   ),
                 ],
               ),
             ],
           ),
-          SizedBox(
-            height: 12,
+          TextButton.icon(
+            onPressed: () => cartProvider.removeCart(cart.id),
+            icon: Icon(Icons.delete, color: pengeluaranColor),
+            label: Text('Remove', style: TextStyle(color: pengeluaranColor)),
           ),
-          GestureDetector(
-            onTap: cartProvider.removeCart(cart.id),
-            child: Row(
-              children: [
-                Image.asset(
-                  'assets/icon_remove.png',
-                  width: 10,
-                ),
-                SizedBox(width: 4),
-                Text(
-                  'Remove',
-                  style: primaryTextStyle.copyWith(
-                    fontSize: 12,
-                    fontWeight: light,
-                    color: alertColor,
-                  ),
-                ),
-              ],
-            ),
-          )
         ],
       ),
     );

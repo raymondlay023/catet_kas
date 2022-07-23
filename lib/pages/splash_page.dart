@@ -1,8 +1,6 @@
 import 'dart:async';
-import 'package:catet_kas/providers/product_provider.dart';
 import 'package:catet_kas/theme.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class SplashPage extends StatefulWidget {
   const SplashPage({Key? key}) : super(key: key);
@@ -12,13 +10,14 @@ class SplashPage extends StatefulWidget {
 }
 
 class _SplashPageState extends State<SplashPage> {
+  @override
   void initState() {
     // getInit();
 
     // super.initState();
 
     Timer(
-      Duration(seconds: 3),
+      const Duration(seconds: 3),
       () => Navigator.pushNamed(context, '/sign-in'),
     );
   }

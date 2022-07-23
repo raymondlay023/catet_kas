@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:catet_kas/models/product_model.dart';
 import 'package:catet_kas/services/product_service.dart';
 import 'package:flutter/cupertino.dart';
@@ -7,19 +5,12 @@ import 'package:flutter/cupertino.dart';
 class ProductProvider with ChangeNotifier {
   //initialize product & products
   List<ProductModel> _products = [];
-  late ProductModel _product;
 
   //getter setter products
   List<ProductModel> get products => _products;
   set products(List<ProductModel> products) {
     _products = products;
     notifyListeners();
-  }
-
-  // getter setter product
-  ProductModel get product => _product;
-  set product(ProductModel product) {
-    _product = product;
   }
 
   Future<void> getProducts(String token) async {
@@ -33,13 +24,21 @@ class ProductProvider with ChangeNotifier {
 
   Future<bool> updateProduct({
     required int id,
+    required String token,
     String? name,
     double? stock,
     double? price,
+    double? capital,
   }) async {
     try {
-      ProductModel product = await ProductService().update();
-      _product = product;
+      await ProductService().update(
+        token: token,
+        id: id,
+        name: name,
+        stock: stock,
+        price: price,
+        capital: capital,
+      );
       return true;
     } catch (e) {
       print(e);
@@ -55,14 +54,29 @@ class ProductProvider with ChangeNotifier {
     double stock = 0,
   }) async {
     try {
-      ProductModel product = await ProductService().create(
+      await ProductService().create(
         token: token,
         name: name,
         price: price,
         capital: capital,
         stock: stock,
       );
-      _product = product;
+      return true;
+    } catch (e) {
+      print(e);
+      return false;
+    }
+  }
+
+  Future<bool> deleteProduct({
+    required String token,
+    required int id,
+  }) async {
+    try {
+      await ProductService().delete(
+        token: token,
+        id: id,
+      );
       return true;
     } catch (e) {
       print(e);

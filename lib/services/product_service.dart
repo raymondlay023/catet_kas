@@ -35,13 +35,19 @@ class ProductService {
   }
 
   Future<ProductModel> update({
+    required String token,
+    required int id,
     String? name,
     double? price,
     double? capital,
     double? stock,
   }) async {
-    var url = Uri.parse('$baseUrl/update');
-    var headers = {'Content-Type': 'application/json'};
+    var url = Uri.parse('$baseUrl/update?id=$id');
+    var headers = {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': token,
+    };
     var body = jsonEncode({
       'name': name,
       'price': price,
@@ -99,7 +105,33 @@ class ProductService {
       ProductModel product = ProductModel.fromJson(data);
       return product;
     } else {
-      throw Exception('Produk berhasil ditambahkan!');
+      throw Exception('Produk gagal ditambahkan!');
+    }
+  }
+
+  Future<void> delete({
+    required String token,
+    required int id,
+  }) async {
+    var url = Uri.parse('$baseUrl/delete?id=$id');
+    var headers = {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': token,
+    };
+
+    var response = await http.post(
+      url,
+      headers: headers,
+    );
+
+    print(response.body);
+
+    if (response.statusCode == 200) {
+      var data = jsonDecode(response.body)['data'];
+      print(data['message']);
+    } else {
+      throw Exception('Produk gagal dihapus!');
     }
   }
 }

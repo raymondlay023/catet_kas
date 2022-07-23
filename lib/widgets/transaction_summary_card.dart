@@ -9,7 +9,7 @@ class TransactionSummary extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(top: 15),
+      margin: const EdgeInsets.only(top: 15),
       width: double.infinity,
       height: 50,
       decoration: BoxDecoration(
@@ -41,7 +41,7 @@ class TransactionSummary extends StatelessWidget {
               ),
             ),
           ),
-          Divider(
+          const Divider(
             thickness: 1,
             height: 5,
           ),

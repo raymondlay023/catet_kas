@@ -1,66 +1,108 @@
 import 'package:catet_kas/models/product_model.dart';
+import 'package:catet_kas/providers/cart_provider.dart';
 import 'package:catet_kas/theme.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-class ProductCard extends StatelessWidget {
+class ProductCard extends StatefulWidget {
   final ProductModel product;
-  ProductCard(this.product);
+  const ProductCard(this.product);
+
+  @override
+  State<ProductCard> createState() => _ProductCardState();
+}
+
+class _ProductCardState extends State<ProductCard> {
+  late bool isChecked;
+  @override
+  void initState() {
+    super.initState();
+    isChecked = getData();
+  }
+
+  getData() {
+    CartProvider cartProvider =
+        Provider.of<CartProvider>(context, listen: false);
+    bool value = cartProvider.productExist(widget.product);
+    return value;
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: 300,
-      alignment: Alignment.center,
-      margin: EdgeInsets.symmetric(horizontal: defaultMargin),
-      padding: EdgeInsets.symmetric(
-        vertical: 20,
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          // Checkbox(value: , onChanged: ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+    CartProvider cartProvider = Provider.of<CartProvider>(context);
+
+    return GestureDetector(
+      onTap: (() => isChecked = true),
+      child: Container(
+        width: double.infinity,
+        alignment: Alignment.center,
+        margin: EdgeInsets.symmetric(horizontal: defaultMargin),
+        padding: const EdgeInsets.symmetric(
+          vertical: 10,
+        ),
+        child: Expanded(
+          child: Row(
             children: [
-              Text(
-                product.name!,
-                style: secondaryTextStyle.copyWith(
-                  fontSize: 16,
-                  fontWeight: bold,
-                  color: primaryTextColor,
-                ),
-              ),
-              SizedBox(height: 10),
-              Text(
-                'Rp. ${product.price}',
-                style: secondaryTextStyle.copyWith(
-                  fontSize: 12,
-                  color: Colors.black.withOpacity(0.5),
-                ),
+              Checkbox(
+                  checkColor: Colors.white,
+                  value: getData(),
+                  onChanged: (bool? value) {
+                    setState(() {
+                      isChecked = value!;
+                      if (value == true) {
+                        try {
+                          cartProvider.addCart(widget.product);
+                          cartProvider.carts.isNotEmpty
+                              ? print('cartnya uda masuk bang')
+                              : print('add cartnya gagal');
+                        } catch (e) {
+                          print(e);
+                        }
+                      } else {
+                        try {
+                          cartProvider.removeCart(widget.product.id!);
+                          cartProvider.productExist(widget.product)
+                              ? print('gagal hapus')
+                              : print('berhasil dihapus');
+                        } catch (e) {
+                          print(e);
+                        }
+                      }
+                    });
+                  }),
+              const SizedBox(width: 30),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    widget.product.name!,
+                    style: secondaryTextStyle.copyWith(
+                      fontSize: 16,
+                      fontWeight: bold,
+                      color: primaryTextColor,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  Text(
+                    'Rp. ${widget.product.price}',
+                    style: secondaryTextStyle.copyWith(
+                      fontSize: 12,
+                      color: Colors.black.withOpacity(0.5),
+                    ),
+                  ),
+                  Text(
+                    'Stok : ${widget.product.stock}',
+                    style: secondaryTextStyle.copyWith(
+                      fontSize: 12,
+                      color: Colors.black.withOpacity(0.5),
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
-          Row(
-            children: [
-              IconButton(
-                splashRadius: 20,
-                onPressed: () {},
-                icon: Icon(Icons.indeterminate_check_box_outlined),
-              ),
-              Text(
-                product.stock.toString(),
-                style: secondaryTextStyle.copyWith(
-                  fontSize: 12,
-                  color: primaryTextColor,
-                ),
-              ),
-              IconButton(
-                splashRadius: 20,
-                onPressed: () {},
-                icon: Icon(Icons.add_box_outlined),
-              ),
-            ],
-          ),
-        ],
+        ),
       ),
     );
   }

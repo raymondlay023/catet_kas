@@ -12,9 +12,8 @@ class EditProfilePage extends StatefulWidget {
   State<EditProfilePage> createState() => _EditProfilePageState();
 }
 
-late String _token;
-
 class _EditProfilePageState extends State<EditProfilePage> {
+  @override
   void initState() {
     super.initState();
     getInit();
@@ -23,12 +22,10 @@ class _EditProfilePageState extends State<EditProfilePage> {
   getInit() async {
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('token');
-    setState(() {
-      _token = token!;
-    });
-    print(_token);
+    AuthProvider().getUser(token!);
   }
 
+  @override
   Widget build(BuildContext context) {
     @override
     AuthProvider authProvider = Provider.of<AuthProvider>(context);
@@ -42,8 +39,10 @@ class _EditProfilePageState extends State<EditProfilePage> {
         TextEditingController(text: user.email);
 
     handleUpdateProfile() async {
+      final prefs = await SharedPreferences.getInstance();
+      final token = prefs.getString('token');
       if (await authProvider.update(
-        token: _token,
+        token: token!,
         name: nameController.text,
         username: usernameController.text,
         email: emailController.text,
@@ -60,7 +59,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
             ),
           ),
         );
-        Navigator.restorablePopAndPushNamed(context, '/home');
+        Navigator.pushNamedAndRemoveUntil(
+            context, '/edit-profile', ModalRoute.withName('/home'));
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(

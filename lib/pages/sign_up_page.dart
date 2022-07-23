@@ -38,7 +38,7 @@ class _SignUpPageState extends State<SignUpPage> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             backgroundColor: alertColor,
-            content: Text(
+            content: const Text(
               'Gagal Register!',
               textAlign: TextAlign.center,
             ),
@@ -53,7 +53,7 @@ class _SignUpPageState extends State<SignUpPage> {
 
     Widget nameInput() {
       return Container(
-        margin: EdgeInsets.only(top: 40),
+        margin: const EdgeInsets.only(top: 40),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -64,7 +64,7 @@ class _SignUpPageState extends State<SignUpPage> {
                 fontWeight: regular,
               ),
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             Container(
               height: 40,
               decoration: BoxDecoration(
@@ -93,7 +93,7 @@ class _SignUpPageState extends State<SignUpPage> {
 
     Widget usernameInput() {
       return Container(
-        margin: EdgeInsets.only(top: 40),
+        margin: const EdgeInsets.only(top: 40),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -104,7 +104,7 @@ class _SignUpPageState extends State<SignUpPage> {
                 fontWeight: regular,
               ),
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             Container(
               height: 40,
               decoration: BoxDecoration(
@@ -144,7 +144,7 @@ class _SignUpPageState extends State<SignUpPage> {
                 fontWeight: regular,
               ),
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             Container(
               height: 40,
               decoration: BoxDecoration(
@@ -174,7 +174,7 @@ class _SignUpPageState extends State<SignUpPage> {
 
     Widget emailInput() {
       return Container(
-        margin: EdgeInsets.only(top: 40),
+        margin: const EdgeInsets.only(top: 40),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -185,7 +185,7 @@ class _SignUpPageState extends State<SignUpPage> {
                 fontWeight: regular,
               ),
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             Container(
               height: 40,
               decoration: BoxDecoration(
@@ -229,7 +229,7 @@ class _SignUpPageState extends State<SignUpPage> {
                 fontWeight: bold,
               ),
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -281,7 +281,7 @@ class _SignUpPageState extends State<SignUpPage> {
       return Container(
         height: 40,
         width: double.infinity,
-        margin: EdgeInsets.only(
+        margin: const EdgeInsets.only(
           top: 30,
           bottom: 50,
         ),
@@ -307,7 +307,7 @@ class _SignUpPageState extends State<SignUpPage> {
       backgroundColor: backgroundColor1,
       body: SafeArea(
         child: Container(
-          margin: EdgeInsets.symmetric(
+          margin: const EdgeInsets.symmetric(
             horizontal: 40,
           ),
           child: SingleChildScrollView(

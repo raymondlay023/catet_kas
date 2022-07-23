@@ -20,6 +20,7 @@ class ProductModel {
     name = json['name'];
     price = double.parse(json['price'].toString());
     stock = json['stock'];
+    capital = json['capital'];
     createdAt = DateTime.parse(json['created_at']);
     updatedAt = DateTime.parse(json['updated_at']);
   }
@@ -30,6 +31,7 @@ class ProductModel {
       'name': name,
       'price': price,
       'stock': stock,
+      'capital': capital,
       'createdAt': createdAt.toString(),
       'updatedAt': updatedAt.toString(),
     };

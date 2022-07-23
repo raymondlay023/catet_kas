@@ -38,7 +38,8 @@ dependencies:
   flutter_speed_dial: ^6.0.0
   provider: ^6.0.3
   http: ^0.13.4
-  syncfusion_flutter_charts: ^20.1.60+1
+  syncfusion_flutter_charts: ^19.4.50
+  syncfusion_flutter_core: ^19.4.50
   shared_preferences: ^2.0.15
   intl: ^0.17.0
   grouped_list: ^5.1.2

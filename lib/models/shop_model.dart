@@ -1,4 +1,3 @@
-import 'dart:async';
 
 class ShopModel {
   late int? id;

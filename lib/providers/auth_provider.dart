@@ -83,7 +83,7 @@ class AuthProvider with ChangeNotifier {
 
   Future<bool> getUser(String token) async {
     try {
-      await AuthService().getUser(token: token);
+      UserModel user = await AuthService().getUser(token: token);
       _user = user;
       return true;
     } catch (e) {
