@@ -45,7 +45,7 @@ class _ProductCardState extends State<ProductCard> {
             children: [
               Checkbox(
                   checkColor: Colors.white,
-                  value: getData(),
+                  value: isChecked,
                   onChanged: (bool? value) {
                     setState(() {
                       isChecked = value!;
