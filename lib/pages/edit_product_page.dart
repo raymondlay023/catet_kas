@@ -5,10 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class EditProduct extends StatelessWidget {
+class EditProductPage extends StatelessWidget {
   final ProductModel product;
-  const EditProduct({required this.product});
-  // const EditProduct({ Key? key }) : super(key: key);
+  const EditProductPage({required this.product});
+  // const EditProductPage({ Key? key }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

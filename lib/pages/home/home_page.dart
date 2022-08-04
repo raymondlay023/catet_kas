@@ -1,8 +1,10 @@
-import 'package:catet_kas/models/cart_model.dart';
+import 'dart:math';
+
 import 'package:catet_kas/models/shop_model.dart';
+import 'package:catet_kas/models/transaction_item_model.dart';
+import 'package:catet_kas/models/transaction_model.dart';
 import 'package:catet_kas/models/user_model.dart';
 import 'package:catet_kas/providers/auth_provider.dart';
-import 'package:catet_kas/providers/cart_provider.dart';
 import 'package:catet_kas/providers/shop_provider.dart';
 import 'package:catet_kas/providers/transaction_provider.dart';
 import 'package:catet_kas/theme.dart';
@@ -22,13 +24,24 @@ DateTime selectedMonthYear = DateTime(2022, 1);
 class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
-    CartProvider cartProvider = Provider.of<CartProvider>(context);
     AuthProvider authProvider = Provider.of<AuthProvider>(context);
     ShopProvider shopProvider = Provider.of<ShopProvider>(context);
     TransactionProvider transactionProvider =
         Provider.of<TransactionProvider>(context);
 
-    List<CartModel> data = cartProvider.carts;
+    List<TransactionItemModel> allItems = [];
+    List<TransactionModel> filteredTransactions = transactionProvider
+        .transactions
+        .where((transaction) =>
+            transaction.createdAt!.month == selectedMonthYear.month)
+        .toList();
+    for (var transaction in filteredTransactions) {
+      var items = transaction.items!.map(
+        (item) => item,
+      );
+      allItems.addAll(items.map((item) => TransactionItemModel.fromJson(item)));
+    }
+
     UserModel user = authProvider.user;
     ShopModel shop = shopProvider.shop;
 
@@ -50,68 +63,64 @@ class _HomePageState extends State<HomePage> {
 
     Widget profileCard() {
       return Container(
-        margin: EdgeInsets.only(
-          top: defaultMargin,
-        ),
+        margin: EdgeInsets.only(top: defaultMargin),
         padding: const EdgeInsets.all(20),
         height: 160,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(15),
           color: primaryColor,
         ),
-        child: Expanded(
-          child: Column(
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Halo, ${user.name} !',
-                        style: primaryTextStyle.copyWith(
-                          fontSize: 20,
-                          fontWeight: bold,
-                          color: cardColor,
-                        ),
+        child: Column(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Halo, ${user.name} !',
+                      style: primaryTextStyle.copyWith(
+                        fontSize: 20,
+                        fontWeight: bold,
+                        color: cardColor,
                       ),
-                      Text(
-                        '@${user.username}',
-                        style: primaryTextStyle.copyWith(
-                          fontSize: 14,
-                          color: cardColor.withOpacity(0.5),
-                        ),
+                    ),
+                    Text(
+                      '@${user.username}',
+                      style: primaryTextStyle.copyWith(
+                        fontSize: 14,
+                        color: cardColor.withOpacity(0.5),
                       ),
-                    ],
-                  ),
-                  CircleAvatar(
-                    backgroundImage: AssetImage('assets/image_profile.png'),
-                    // backgroundImage: NetworkImage(user.profilePhotoUrl!),
-                    radius: 30,
-                  ),
-                ],
-              ),
-              const SizedBox(height: 20),
-              Container(
-                width: 240,
-                height: 40,
-                padding: const EdgeInsets.all(10),
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(25),
-                  color: cardColor,
+                    ),
+                  ],
                 ),
-                child: Text(
-                  shop.name!,
-                  style: primaryTextStyle.copyWith(
-                    fontSize: 16,
-                    color: primaryColor,
-                  ),
+                CircleAvatar(
+                  // backgroundImage: AssetImage('assets/image_profile.png'),
+                  backgroundImage: NetworkImage(user.profilePhotoUrl!),
+                  radius: 30,
+                ),
+              ],
+            ),
+            const SizedBox(height: 20),
+            Container(
+              width: 240,
+              height: 40,
+              padding: const EdgeInsets.all(10),
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(25),
+                color: cardColor,
+              ),
+              child: Text(
+                shop.name!,
+                style: primaryTextStyle.copyWith(
+                  fontSize: 16,
+                  color: primaryColor,
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       );
     }
@@ -137,6 +146,7 @@ class _HomePageState extends State<HomePage> {
                 border: Border.all(color: backgroundColor4),
               ),
               child: TextButton(
+                style: TextButton.styleFrom(primary: primaryColor),
                 onPressed: handleMonthPicker,
                 child: Text(
                   DateFormat('MMMM').format(selectedMonthYear),
@@ -166,78 +176,76 @@ class _HomePageState extends State<HomePage> {
           color: cardColor,
           borderRadius: BorderRadius.circular(15),
         ),
-        child: Expanded(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              Column(
-                children: [
-                  Text(
-                    'Total Penjualan',
-                    style: primaryTextStyle.copyWith(
-                      fontSize: 12,
-                    ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            Column(
+              children: [
+                Text(
+                  'Total Penjualan',
+                  style: primaryTextStyle.copyWith(
+                    fontSize: 12,
                   ),
-                  const SizedBox(height: 7),
-                  Text(
-                    'Rp. ${transactionProvider.totalTransaksi('PEMASUKAN', selectedMonthYear)}',
-                    style: primaryTextStyle.copyWith(
-                      color: pemasukanColor,
-                      fontSize: 14,
-                      fontWeight: bold,
-                    ),
-                  ),
-                ],
-              ),
-              Container(
-                height: 65,
-                width: 1,
-                decoration: BoxDecoration(
-                  color: primaryTextColor.withOpacity(0.5),
                 ),
-              ),
-              Column(
-                children: [
-                  Text(
-                    'Total Pengeluaran',
-                    style: primaryTextStyle.copyWith(
-                      fontSize: 12,
-                    ),
+                const SizedBox(height: 7),
+                Text(
+                  'Rp. ${transactionProvider.totalTransaksi('PEMASUKAN', selectedMonthYear)}',
+                  style: primaryTextStyle.copyWith(
+                    color: pemasukanColor,
+                    fontSize: 14,
+                    fontWeight: bold,
                   ),
-                  const SizedBox(height: 7),
-                  Text(
-                    'Rp. ${transactionProvider.totalTransaksi('PENGELUARAN', selectedMonthYear)}',
-                    style: primaryTextStyle.copyWith(
-                      color: pengeluaranColor,
-                      fontSize: 14,
-                      fontWeight: bold,
-                    ),
-                  ),
-                ],
+                ),
+              ],
+            ),
+            Container(
+              height: 65,
+              width: 1,
+              decoration: BoxDecoration(
+                color: primaryTextColor.withOpacity(0.5),
               ),
-            ],
-          ),
+            ),
+            Column(
+              children: [
+                Text(
+                  'Total Pengeluaran',
+                  style: primaryTextStyle.copyWith(
+                    fontSize: 12,
+                  ),
+                ),
+                const SizedBox(height: 7),
+                Text(
+                  'Rp. ${transactionProvider.totalTransaksi('PENGELUARAN', selectedMonthYear)}',
+                  style: primaryTextStyle.copyWith(
+                    color: pengeluaranColor,
+                    fontSize: 14,
+                    fontWeight: bold,
+                  ),
+                ),
+              ],
+            ),
+          ],
         ),
       );
     }
 
     Widget barChart() {
       return Container(
-        margin: const EdgeInsets.only(
+        margin: EdgeInsets.only(
           top: 20,
+          bottom: defaultMargin,
         ),
         padding: const EdgeInsets.only(
           top: 20,
-          left: 20,
-          right: 20,
+          left: 5,
+          right: 5,
         ),
-        width: 360,
-        height: 370,
         child: Column(
           children: [
             Text(
-              'Barang yang paling sering dibeli',
+              'Barang yang paling \nsering dibeli',
               style: primaryTextStyle.copyWith(fontSize: 16),
+              textAlign: TextAlign.center,
             ),
             const SizedBox(height: 20),
             SfCartesianChart(
@@ -246,14 +254,20 @@ class _HomePageState extends State<HomePage> {
               legend: Legend(isVisible: true, position: LegendPosition.bottom),
               // Enable tooltip
               tooltipBehavior: TooltipBehavior(enable: true),
-              series: <ChartSeries<CartModel, String>>[
-                LineSeries<CartModel, String>(
-                  dataSource: data,
-                  xValueMapper: (CartModel cart, _) => cart.product.name,
-                  yValueMapper: (CartModel cart, _) => cart.quantity,
-                  name: 'Sales',
+              series: <ChartSeries<dynamic, String>>[
+                ColumnSeries<dynamic, String>(
+                  color: primaryColor,
+                  gradient: LinearGradient(
+                    colors: <Color>[secondaryColor, primaryColor],
+                    begin: Alignment.bottomLeft,
+                    end: Alignment.topRight,
+                  ),
+                  dataSource: allItems,
+                  xValueMapper: (dynamic items, _) => items.product.name,
+                  yValueMapper: (dynamic items, _) => items.quantity,
+                  name: 'Jumlah barang dari setiap produk',
                   // Enable data label`
-                  dataLabelSettings: const DataLabelSettings(isVisible: true),
+                  // dataLabelSettings: const DataLabelSettings(isVisible: true),
                 )
               ],
             ),
@@ -268,25 +282,18 @@ class _HomePageState extends State<HomePage> {
 
     return Scaffold(
       backgroundColor: backgroundColor1,
-      body: SafeArea(
+      body: SingleChildScrollView(
         child: Container(
           alignment: Alignment.center,
           margin: EdgeInsets.symmetric(
             horizontal: defaultMargin,
           ),
-          child: ListView(
+          child: Column(
             children: [
-              Column(
-                children: [
-                  profileCard(),
-                  ringkasanBulananHeader(),
-                  ringkasanBulananCard(),
-                  barChart(),
-                  SizedBox(
-                    height: defaultMargin,
-                  ),
-                ],
-              ),
+              profileCard(),
+              ringkasanBulananHeader(),
+              ringkasanBulananCard(),
+              barChart(),
             ],
           ),
         ),

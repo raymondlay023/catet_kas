@@ -45,7 +45,13 @@
     },
     {
       "name": "cupertino_icons",
-      "rootUri": "file:///C:/Users/RAYMOND%20LAY/Documents/flutter/.pub-cache/hosted/pub.dartlang.org/cupertino_icons-1.0.4",
+      "rootUri": "file:///C:/Users/RAYMOND%20LAY/Documents/flutter/.pub-cache/hosted/pub.dartlang.org/cupertino_icons-1.0.5",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
+      "name": "dotted_line",
+      "rootUri": "file:///C:/Users/RAYMOND%20LAY/Documents/flutter/.pub-cache/hosted/pub.dartlang.org/dotted_line-3.1.0",
       "packageUri": "lib/",
       "languageVersion": "2.12"
     },
@@ -57,7 +63,7 @@
     },
     {
       "name": "ffi",
-      "rootUri": "file:///C:/Users/RAYMOND%20LAY/Documents/flutter/.pub-cache/hosted/pub.dartlang.org/ffi-1.1.2",
+      "rootUri": "file:///C:/Users/RAYMOND%20LAY/Documents/flutter/.pub-cache/hosted/pub.dartlang.org/ffi-1.2.1",
       "packageUri": "lib/",
       "languageVersion": "2.12"
     },
@@ -105,7 +111,7 @@
     },
     {
       "name": "google_fonts",
-      "rootUri": "file:///C:/Users/RAYMOND%20LAY/Documents/flutter/.pub-cache/hosted/pub.dartlang.org/google_fonts-2.3.2",
+      "rootUri": "file:///C:/Users/RAYMOND%20LAY/Documents/flutter/.pub-cache/hosted/pub.dartlang.org/google_fonts-2.3.3",
       "packageUri": "lib/",
       "languageVersion": "2.12"
     },
@@ -123,7 +129,7 @@
     },
     {
       "name": "http_parser",
-      "rootUri": "file:///C:/Users/RAYMOND%20LAY/Documents/flutter/.pub-cache/hosted/pub.dartlang.org/http_parser-4.0.0",
+      "rootUri": "file:///C:/Users/RAYMOND%20LAY/Documents/flutter/.pub-cache/hosted/pub.dartlang.org/http_parser-4.0.1",
       "packageUri": "lib/",
       "languageVersion": "2.12"
     },
@@ -183,43 +189,43 @@
     },
     {
       "name": "path_provider",
-      "rootUri": "file:///C:/Users/RAYMOND%20LAY/Documents/flutter/.pub-cache/hosted/pub.dartlang.org/path_provider-2.0.9",
+      "rootUri": "file:///C:/Users/RAYMOND%20LAY/Documents/flutter/.pub-cache/hosted/pub.dartlang.org/path_provider-2.0.11",
       "packageUri": "lib/",
       "languageVersion": "2.14"
     },
     {
       "name": "path_provider_android",
-      "rootUri": "file:///C:/Users/RAYMOND%20LAY/Documents/flutter/.pub-cache/hosted/pub.dartlang.org/path_provider_android-2.0.13",
+      "rootUri": "file:///C:/Users/RAYMOND%20LAY/Documents/flutter/.pub-cache/hosted/pub.dartlang.org/path_provider_android-2.0.14",
       "packageUri": "lib/",
       "languageVersion": "2.14"
     },
     {
       "name": "path_provider_ios",
-      "rootUri": "file:///C:/Users/RAYMOND%20LAY/Documents/flutter/.pub-cache/hosted/pub.dartlang.org/path_provider_ios-2.0.8",
+      "rootUri": "file:///C:/Users/RAYMOND%20LAY/Documents/flutter/.pub-cache/hosted/pub.dartlang.org/path_provider_ios-2.0.9",
       "packageUri": "lib/",
       "languageVersion": "2.14"
     },
     {
       "name": "path_provider_linux",
-      "rootUri": "file:///C:/Users/RAYMOND%20LAY/Documents/flutter/.pub-cache/hosted/pub.dartlang.org/path_provider_linux-2.1.5",
+      "rootUri": "file:///C:/Users/RAYMOND%20LAY/Documents/flutter/.pub-cache/hosted/pub.dartlang.org/path_provider_linux-2.1.7",
       "packageUri": "lib/",
       "languageVersion": "2.12"
     },
     {
       "name": "path_provider_macos",
-      "rootUri": "file:///C:/Users/RAYMOND%20LAY/Documents/flutter/.pub-cache/hosted/pub.dartlang.org/path_provider_macos-2.0.5",
+      "rootUri": "file:///C:/Users/RAYMOND%20LAY/Documents/flutter/.pub-cache/hosted/pub.dartlang.org/path_provider_macos-2.0.6",
       "packageUri": "lib/",
       "languageVersion": "2.12"
     },
     {
       "name": "path_provider_platform_interface",
-      "rootUri": "file:///C:/Users/RAYMOND%20LAY/Documents/flutter/.pub-cache/hosted/pub.dartlang.org/path_provider_platform_interface-2.0.3",
+      "rootUri": "file:///C:/Users/RAYMOND%20LAY/Documents/flutter/.pub-cache/hosted/pub.dartlang.org/path_provider_platform_interface-2.0.4",
       "packageUri": "lib/",
       "languageVersion": "2.12"
     },
     {
       "name": "path_provider_windows",
-      "rootUri": "file:///C:/Users/RAYMOND%20LAY/Documents/flutter/.pub-cache/hosted/pub.dartlang.org/path_provider_windows-2.0.5",
+      "rootUri": "file:///C:/Users/RAYMOND%20LAY/Documents/flutter/.pub-cache/hosted/pub.dartlang.org/path_provider_windows-2.0.7",
       "packageUri": "lib/",
       "languageVersion": "2.12"
     },
@@ -380,7 +386,7 @@
       "languageVersion": "2.16"
     }
   ],
-  "generated": "2022-07-18T11:09:40.458696Z",
+  "generated": "2022-07-27T10:57:34.080588Z",
   "generator": "pub",
   "generatorVersion": "2.16.1"
 }

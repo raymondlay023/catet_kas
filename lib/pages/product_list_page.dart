@@ -7,14 +7,14 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class ProductList extends StatefulWidget {
-  const ProductList({Key? key}) : super(key: key);
+class ProductListPage extends StatefulWidget {
+  const ProductListPage({Key? key}) : super(key: key);
 
   @override
-  State<ProductList> createState() => _ProductListState();
+  State<ProductListPage> createState() => _ProductListState();
 }
 
-class _ProductListState extends State<ProductList> {
+class _ProductListState extends State<ProductListPage> {
   late Future<dynamic> dataFuture;
   @override
   void initState() {
@@ -101,15 +101,6 @@ class _ProductListState extends State<ProductList> {
     }
 
     Widget products() {
-      return ListView(
-        shrinkWrap: true,
-        children: productProvider.products
-            .map((product) => ProductCard(product))
-            .toList(),
-      );
-    }
-
-    Widget products2() {
       return SingleChildScrollView(
           child: ExpansionPanelList.radio(
         children: productProvider.products
@@ -117,7 +108,7 @@ class _ProductListState extends State<ProductList> {
                   value: product.id!,
                   headerBuilder: (context, isExpanded) => ProductCard(product),
                   body: Container(
-                      padding: EdgeInsets.only(bottom: 20),
+                      padding: const EdgeInsets.only(bottom: 20),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
@@ -125,13 +116,13 @@ class _ProductListState extends State<ProductList> {
                             onTap: () => Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: ((context) => EditProduct(
+                                builder: ((context) => EditProductPage(
                                       product: product,
                                     )),
                               ),
                             ),
                             child: Row(
-                              children: [
+                              children: const [
                                 Icon(Icons.mode_edit, color: Colors.green),
                                 SizedBox(width: 10),
                                 Text('Edit'),
@@ -141,7 +132,7 @@ class _ProductListState extends State<ProductList> {
                           GestureDetector(
                             onTap: () => handleDeleteProduct(product),
                             child: Row(
-                              children: [
+                              children: const [
                                 Icon(Icons.delete, color: Colors.red),
                                 SizedBox(width: 10),
                                 Text('Delete'),
@@ -156,8 +147,7 @@ class _ProductListState extends State<ProductList> {
     }
 
     Widget listProduct() {
-      return Expanded(
-          child: FutureBuilder(
+      return FutureBuilder(
         future: dataFuture,
         builder: (context, snapshot) {
           switch (snapshot.connectionState) {
@@ -169,14 +159,14 @@ class _ProductListState extends State<ProductList> {
                 return const Center(child: Text('error :'));
               } else if (snapshot.hasData) {
                 return Expanded(
-                  child: products2(),
+                  child: products(),
                 );
               } else {
                 return const Center(child: CircularProgressIndicator());
               }
           }
         },
-      ));
+      );
     }
 
     Widget buttonCariBarang() {

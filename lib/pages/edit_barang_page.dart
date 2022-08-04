@@ -1,8 +1,8 @@
 import 'package:catet_kas/theme.dart';
 import 'package:flutter/material.dart';
 
-class EditBarang extends StatelessWidget {
-  // const EditBarang({ Key? key }) : super(key: key);
+class EditBarangPage extends StatelessWidget {
+  // const EditBarangPage({ Key? key }) : super(key: key);
 //
   @override
   Widget build(BuildContext context) {

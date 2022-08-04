@@ -4,7 +4,7 @@ import 'package:catet_kas/models/user_model.dart';
 import 'package:http/http.dart' as http;
 
 class AuthService {
-  String baseUrl = 'http://192.168.1.4:8000/api';
+  String baseUrl = 'http://192.168.1.5:8000/api';
 
   Future<UserModel> register({
     required String name,

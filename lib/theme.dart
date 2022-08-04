@@ -19,7 +19,7 @@ Color thirdTextColor = const Color(0xffC4C4C4);
 Color cardColor = const Color(0xffFFFFFF);
 Color alertColor = const Color(0xffED6363);
 
-TextStyle primaryTextStyle = GoogleFonts.poppins(
+TextStyle primaryTextStyle = GoogleFonts.lato(
   color: primaryTextColor,
 );
 

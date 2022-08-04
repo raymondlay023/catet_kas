@@ -16,6 +16,7 @@ class CatetPage extends StatefulWidget {
 
 class _CatetPageState extends State<CatetPage> {
   late Future<dynamic> dataFuture;
+  final cariController = TextEditingController(text: '');
   @override
   void initState() {
     super.initState();
@@ -85,7 +86,7 @@ class _CatetPageState extends State<CatetPage> {
                     ),
                     const SizedBox(height: 7),
                     Text(
-                      '\Rp. ${transactionProvider.totalTransaksi('PEMASUKAN')}',
+                      'Rp. ${transactionProvider.totalTransaksi('PEMASUKAN')}',
                       style: primaryTextStyle.copyWith(
                         color: pemasukanColor,
                         fontSize: 14,
@@ -147,7 +148,7 @@ class _CatetPageState extends State<CatetPage> {
                     ),
                   ),
                   Text(
-                    '\Rp. ${gainLossTotal.abs()}',
+                    'Rp. ${gainLossTotal.abs()}',
                     style: primaryTextStyle.copyWith(
                       fontSize: 16,
                       fontWeight: bold,
@@ -177,7 +178,9 @@ class _CatetPageState extends State<CatetPage> {
               borderRadius: BorderRadius.circular(15),
             ),
             child: TextButton(
-              onPressed: () {},
+              style: TextButton.styleFrom(primary: buttonColor),
+              onPressed: () =>
+                  Navigator.pushNamed(context, '/laporan-keuangan'),
               child: Text(
                 'Laporan Keuangan',
                 style: primaryTextStyle.copyWith(
@@ -191,57 +194,35 @@ class _CatetPageState extends State<CatetPage> {
       );
     }
 
+    // void searchTransaction(String query) {
+    //   final suggestion = transactionProvider.transactions.where((transaction) {
+    //     final transactionNote = transaction.note!.toLowerCase();
+    //     final input = query.toLowerCase();
+
+    //     return transactionNote.contains(input);
+    //   }).toList();
+    //   setState(() {});
+    // }
+
     Widget cari() {
       return Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Container(
             margin: const EdgeInsets.only(top: 15),
-            width: 320,
             height: 55,
-            child: Row(
-              children: [
-                Container(
-                  height: 45,
-                  width: 230,
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 10,
-                    vertical: 12,
-                  ),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(5),
-                    border: Border.all(
-                      color: primaryTextColor,
-                    ),
-                  ),
-                  child: TextFormField(
-                    decoration: const InputDecoration.collapsed(
-                      hintText: 'Cari',
-                    ),
-                  ),
+            width: MediaQuery.of(context).size.width / 1.4,
+            child: TextField(
+              controller: cariController,
+              decoration: InputDecoration(
+                prefixIcon: const Icon(Icons.search),
+                hintText: 'Cari transaksi',
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(5),
+                  borderSide: BorderSide(color: primaryTextColor),
                 ),
-                const SizedBox(
-                  width: 20,
-                ),
-                Container(
-                  height: 45,
-                  width: 70,
-                  decoration: BoxDecoration(
-                    color: buttonColor,
-                    borderRadius: BorderRadius.circular(5),
-                  ),
-                  child: TextButton(
-                    onPressed: () {},
-                    child: Text(
-                      'Cari',
-                      style: secondaryTextStyle.copyWith(
-                        color: primaryTextColor,
-                        fontWeight: bold,
-                      ),
-                    ),
-                  ),
-                ),
-              ],
+              ),
+              // onChanged: searchTransaction,
             ),
           ),
         ],
@@ -249,96 +230,93 @@ class _CatetPageState extends State<CatetPage> {
     }
 
     Widget transactions() {
-      return Expanded(
-        child: Container(
-          width: MediaQuery.of(context).size.width,
-          margin: const EdgeInsets.only(top: 10),
-          padding: const EdgeInsets.all(15),
-          decoration: BoxDecoration(borderRadius: BorderRadius.circular(15)),
-          child: GroupedListView<dynamic, String>(
-            separator: const Divider(height: 5),
-            shrinkWrap: true,
-            itemComparator: (item1, item2) => item1.note.compareTo(item2.note),
-            groupComparator: (value1, value2) => value2.compareTo(value1),
-            elements: transactionProvider.transactions,
-            groupBy: (element) => element.createdAt.toString(),
-            //header list transaksi
-            groupHeaderBuilder: (value) => Column(
-              children: [
-                Container(
-                  width: 330,
-                  padding: const EdgeInsets.all(15),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    color: Colors.black.withAlpha(25),
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Container(
-                        alignment: Alignment.center,
-                        width: 115,
-                        child: Text(
-                          DateFormat('dd-MMM-yyyy').format(value.createdAt),
-                          style: primaryTextStyle.copyWith(
-                            fontSize: 14,
-                            color: primaryTextColor,
-                          ),
-                        ),
-                      ),
-                      Container(
-                        alignment: Alignment.center,
-                        width: 115,
-                        child: Text(
-                          '\R\p. ${transactionProvider.gainLoss(value.createdAt).abs()}',
-                          style: primaryTextStyle.copyWith(
-                            fontSize: 14,
-                            color: transactionProvider
-                                    .gainLoss(value.createdAt)
-                                    .isNegative
-                                ? alertColor
-                                : pemasukanColor,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
+      return Container(
+        width: MediaQuery.of(context).size.width,
+        margin: const EdgeInsets.only(top: 10),
+        padding: const EdgeInsets.all(15),
+        decoration: BoxDecoration(borderRadius: BorderRadius.circular(15)),
+        child: GroupedListView<dynamic, String>(
+          separator: const Divider(height: 5),
+          itemComparator: (item1, item2) => item1.note.compareTo(item2.note),
+          groupComparator: (value1, value2) => value2.compareTo(value1),
+          elements: transactionProvider.transactions,
+          groupBy: (element) => element.createdAt.toString(),
+          //header list transaksi
+          groupHeaderBuilder: (value) => Column(
+            children: [
+              Container(
+                width: 330,
+                padding: const EdgeInsets.all(15),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  color: Colors.black.withAlpha(25),
                 ),
-                // column transaksi
-                Container(
-                  margin: const EdgeInsets.only(top: 7),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      Text(
-                        'Catatan',
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Container(
+                      alignment: Alignment.center,
+                      width: 115,
+                      child: Text(
+                        DateFormat('dd-MMM-yyyy').format(value.createdAt),
                         style: primaryTextStyle.copyWith(
-                          fontSize: 12,
-                          color: Colors.black,
+                          fontSize: 14,
+                          color: primaryTextColor,
                         ),
                       ),
-                      Text(
-                        'Transaksi',
+                    ),
+                    Container(
+                      alignment: Alignment.center,
+                      width: 115,
+                      child: Text(
+                        'Rp. ${transactionProvider.gainLoss(value.createdAt).abs()}',
                         style: primaryTextStyle.copyWith(
-                          fontSize: 12,
-                          color: Colors.black,
+                          fontSize: 14,
+                          color: transactionProvider
+                                  .gainLoss(value.createdAt)
+                                  .isNegative
+                              ? alertColor
+                              : pemasukanColor,
                         ),
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-              ],
-            ),
-            itemBuilder: (context, element) => TransactionCard(element),
+              ),
+              // column transaksi
+              Container(
+                margin: const EdgeInsets.only(top: 7),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    Text(
+                      'Catatan',
+                      style: primaryTextStyle.copyWith(
+                        fontSize: 12,
+                        color: Colors.black,
+                      ),
+                    ),
+                    Text(
+                      'Transaksi',
+                      style: primaryTextStyle.copyWith(
+                        fontSize: 12,
+                        color: Colors.black,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
+          itemBuilder: (context, element) => TransactionCard(element),
         ),
       );
     }
 
     Widget transactionList() {
-      return Container(
+      return SizedBox(
         width: double.infinity,
-        height: MediaQuery.of(context).size.width / 2,
+        height: MediaQuery.of(context).size.width / 1.3,
         child: FutureBuilder(
           future: dataFuture,
           builder: (context, snapshot) {
@@ -350,9 +328,7 @@ class _CatetPageState extends State<CatetPage> {
                 if (snapshot.hasError) {
                   return const Center(child: Text('error :'));
                 } else if (snapshot.hasData) {
-                  return Expanded(
-                    child: transactions(),
-                  );
+                  return transactions();
                 } else {
                   return const Text('something went wrong!');
                 }
@@ -408,7 +384,7 @@ class _CatetPageState extends State<CatetPage> {
         children: [
           summaryCard(),
           laporanKeuanganButton(),
-          cari(),
+          // cari(),
           transactionList(),
         ],
       ),

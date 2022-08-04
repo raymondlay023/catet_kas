@@ -1,10 +1,10 @@
 import 'package:catet_kas/pages/catat_transaksi_page.dart';
-import 'package:catet_kas/pages/edit_product_page.dart';
+import 'package:catet_kas/pages/laporan_keuangan_page.dart';
+import 'package:catet_kas/pages/loading_page.dart';
 import 'package:catet_kas/pages/product_list_page.dart';
 import 'package:catet_kas/pages/edit_profile_page.dart';
 import 'package:catet_kas/pages/edit_shop_profile_page.dart';
 import 'package:catet_kas/pages/home/main_page.dart';
-import 'package:catet_kas/pages/loading_page.dart';
 import 'package:catet_kas/pages/sign_in_page.dart';
 import 'package:catet_kas/pages/sign_up_page.dart';
 import 'package:catet_kas/pages/splash_page.dart';
@@ -58,10 +58,10 @@ class MyApp extends StatelessWidget {
           '/home': (context) => const MainPage(),
           '/edit-profile': (context) => const EditProfilePage(),
           '/edit-shop-profile': (context) => const EditShopProfilePage(),
-          '/catat-transaksi': (context) => CatatTransaksi(),
-          '/product-list': (context) => const ProductList(),
-          '/add-product': (context) => AddProduct(),
-          // '/edit-product': (context) => EditProduct(product: ),
+          '/catat-transaksi': (context) => CatatTransaksiPage(),
+          '/product-list': (context) => const ProductListPage(),
+          '/add-product': (context) => AddProductPage(),
+          '/laporan-keuangan': (context) => LaporanKeuanganPage(),
           '/loading': (context) => const LoadingPage(),
         },
       ),

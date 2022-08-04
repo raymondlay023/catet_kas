@@ -1,5 +1,3 @@
-import 'package:catet_kas/models/transaction_item_model.dart';
-
 class TransactionModel {
   late int? id;
   late String? note;

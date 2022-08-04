@@ -5,8 +5,8 @@ class TransactionItem with ChangeNotifier {
   List<TransactionItemModel> _transaction_items = [];
 
   List<TransactionItemModel> get transaction_items => _transaction_items;
-  set transaction_items(List<TransactionItemModel> transaction_items) {
-    _transaction_items = transaction_items;
+  set transaction_items(List<TransactionItemModel> transactionItems) {
+    _transaction_items = transactionItems;
     notifyListeners();
   }
 }

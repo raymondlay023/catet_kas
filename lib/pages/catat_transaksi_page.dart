@@ -1,25 +1,83 @@
 import 'package:catet_kas/models/cart_model.dart';
 import 'package:catet_kas/providers/cart_provider.dart';
+import 'package:catet_kas/providers/transaction_provider.dart';
 import 'package:catet_kas/theme.dart';
 import 'package:catet_kas/widgets/cart_card.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class CatatTransaksi extends StatefulWidget {
+class CatatTransaksiPage extends StatefulWidget {
   @override
-  State<CatatTransaksi> createState() => _CatatTransaksiState();
+  State<CatatTransaksiPage> createState() => _CatatTransaksiState();
 }
 
-class _CatatTransaksiState extends State<CatatTransaksi> {
-  double totalPrice = 0;
+late String type = '';
+
+class _CatatTransaksiState extends State<CatatTransaksiPage> {
+  late double totalPrice;
+  @override
+  void initState() {
+    super.initState();
+    totalPrice = getTotalPrice();
+  }
+
+  getTotalPrice() {
+    CartProvider cartProvider =
+        Provider.of<CartProvider>(context, listen: false);
+    return cartProvider.totalPrice();
+  }
+
+  TextEditingController noteController = TextEditingController(text: '');
+
   @override
   Widget build(BuildContext context) {
+    TextEditingController totalPemasukanController =
+        TextEditingController(text: totalPrice.toString());
+
     CartProvider cartProvider = Provider.of<CartProvider>(context);
+    TransactionProvider transactionProvider =
+        Provider.of<TransactionProvider>(context);
     List<CartModel> carts = cartProvider.carts;
 
-    getTotalPrice() {
-      totalPrice = cartProvider.totalPrice();
-      return totalPrice;
+    handleAddTransaction() async {
+      final prefs = await SharedPreferences.getInstance();
+
+      final token = prefs.getString('token');
+      if (await transactionProvider.create(
+        token: token!,
+        note: noteController.text,
+        total: double.parse(totalPemasukanController.text),
+        type: type,
+        items: carts,
+      )) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            backgroundColor: pemasukanColor,
+            content: const Text(
+              'Transaksi berhasil dibuat!',
+              textAlign: TextAlign.center,
+            ),
+          ),
+        );
+        setState(() {
+          type = '';
+          getTotalPrice();
+          carts.clear();
+        });
+        Navigator.pushReplacementNamed(context, '/catat-transaksi');
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            backgroundColor: pengeluaranColor,
+            content: const Text(
+              'Transaksi gagal dibuat!',
+              textAlign: TextAlign.center,
+            ),
+          ),
+        );
+      }
     }
 
     Widget switchButton() {
@@ -30,42 +88,52 @@ class _CatatTransaksiState extends State<CatatTransaksi> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Container(
-              width: 170,
+              width: MediaQuery.of(context).size.width / 2.55,
               height: 40,
               decoration: BoxDecoration(
-                color: pemasukanColor,
+                color:
+                    type == 'PEMASUKAN' ? pemasukanColor : Colors.transparent,
+                border: Border.all(
+                  color: pemasukanColor,
+                ),
                 borderRadius: BorderRadius.circular(5),
               ),
               child: TextButton(
-                onPressed: () {},
+                onPressed: () => setState(() {
+                  type = 'PEMASUKAN';
+                }),
                 child: Text(
                   'Pemasukan',
                   style: secondaryTextStyle.copyWith(
-                    color: backgroundColor1,
+                    color:
+                        type == 'PEMASUKAN' ? backgroundColor1 : pemasukanColor,
                   ),
                 ),
               ),
             ),
-            const SizedBox(
-              width: 25,
-            ),
+            const SizedBox(width: 25),
             Container(
-              width: 170,
+              width: MediaQuery.of(context).size.width / 2.55,
               height: 40,
               decoration: BoxDecoration(
+                color: type == 'PENGELUARAN'
+                    ? pengeluaranColor
+                    : Colors.transparent,
                 border: Border.all(
                   color: pengeluaranColor,
                 ),
                 borderRadius: BorderRadius.circular(5),
               ),
               child: TextButton(
-                onPressed: () {
-                  Navigator.pushNamed(context, '/catat-pengeluaran');
-                },
+                onPressed: () => setState(() {
+                  type = 'PENGELUARAN';
+                }),
                 child: Text(
                   'Pengeluaran',
                   style: secondaryTextStyle.copyWith(
-                    color: pengeluaranColor,
+                    color: type == 'PENGELUARAN'
+                        ? backgroundColor1
+                        : pengeluaranColor,
                   ),
                 ),
               ),
@@ -75,7 +143,7 @@ class _CatatTransaksiState extends State<CatatTransaksi> {
       );
     }
 
-    Widget buttonTambahBarangTerjual() {
+    Widget buttonTambahBarangTransaksi() {
       return Container(
         width: 340,
         height: 40,
@@ -89,7 +157,7 @@ class _CatatTransaksiState extends State<CatatTransaksi> {
             Navigator.pushNamed(context, '/product-list');
           },
           child: Text(
-            '+ Tambah Barang Terjual',
+            '+ Tambah Barang Transaksi',
             style: secondaryTextStyle.copyWith(
               color: primaryTextColor,
             ),
@@ -98,7 +166,7 @@ class _CatatTransaksiState extends State<CatatTransaksi> {
       );
     }
 
-    Widget inputTotalPemasukan() {
+    Widget inputTotalTransaksi() {
       return Container(
         width: double.infinity,
         height: 50,
@@ -107,7 +175,7 @@ class _CatatTransaksiState extends State<CatatTransaksi> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              'Total Pemasukan',
+              'Total Transaksi',
               style: secondaryTextStyle.copyWith(
                 color: primaryTextColor,
               ),
@@ -121,7 +189,16 @@ class _CatatTransaksiState extends State<CatatTransaksi> {
                 vertical: 10,
               ),
               child: TextFormField(
-                initialValue: getTotalPrice().toString(),
+                inputFormatters: [
+                  FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
+                  FilteringTextInputFormatter.singleLineFormatter,
+                ],
+                controller: totalPemasukanController,
+                // onChanged: (String value) {
+                //   setState(() {
+                //     totalPrice = double.parse(value);
+                //   });
+                // },
                 cursorColor: primaryColor,
                 decoration: InputDecoration(
                   focusedBorder: UnderlineInputBorder(
@@ -139,7 +216,7 @@ class _CatatTransaksiState extends State<CatatTransaksi> {
 
     Widget inputCatatanTransaksi() {
       return Container(
-        margin: EdgeInsets.only(top: defaultMargin),
+        margin: const EdgeInsets.only(top: 20),
         width: 350,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -147,6 +224,7 @@ class _CatatTransaksiState extends State<CatatTransaksi> {
             Container(
               padding: const EdgeInsets.all(10),
               child: TextFormField(
+                controller: noteController,
                 cursorColor: primaryColor,
                 decoration: InputDecoration(
                   label: const Text('Catatan Transaksi'),
@@ -187,7 +265,7 @@ class _CatatTransaksiState extends State<CatatTransaksi> {
               color: primaryTextColor,
             ),
           ),
-          onPressed: () {},
+          onPressed: handleAddTransaction,
         ),
       );
     }
@@ -217,17 +295,14 @@ class _CatatTransaksiState extends State<CatatTransaksi> {
       body: ListView(
         padding: EdgeInsets.symmetric(horizontal: defaultMargin),
         children: [
+          switchButton(),
           carts.isNotEmpty ? cartItems() : Container(),
-          buttonTambahBarangTerjual(),
-          inputTotalPemasukan(),
+          buttonTambahBarangTransaksi(),
+          inputTotalTransaksi(),
           inputCatatanTransaksi(),
         ],
       ),
       bottomNavigationBar: buttonSimpan(),
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.refresh),
-        onPressed: () => getTotalPrice(),
-      ),
     );
   }
 }

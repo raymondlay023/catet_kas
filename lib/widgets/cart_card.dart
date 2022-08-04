@@ -8,12 +8,13 @@ class CartCard extends StatelessWidget {
   // const CartCard({Key? key}) : super(key: key);
 
   final CartModel cart;
-  CartCard({
+  const CartCard({
     required this.cart,
   });
   @override
   Widget build(BuildContext context) {
     CartProvider cartProvider = Provider.of<CartProvider>(context);
+
     return Container(
       margin: const EdgeInsets.all(5),
       padding: const EdgeInsets.all(15),
@@ -26,12 +27,7 @@ class CartCard extends StatelessWidget {
         children: [
           Row(
             children: [
-              // Text(
-              //   '${cart.quantity}x',
-              //   style: primaryTextStyle.copyWith(
-              //       color: primaryTextColor.withOpacity(0.5)),
-              // ),
-              SizedBox(width: 20),
+              const SizedBox(width: 20),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -44,7 +40,7 @@ class CartCard extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      'Rp.${cart.product.price}',
+                      'Rp.${cart.product.price! * cart.quantity}',
                       style: primaryTextStyle.copyWith(
                           color: primaryTextColor.withOpacity(0.5)),
                     ),

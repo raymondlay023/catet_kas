@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class AddProduct extends StatelessWidget {
-  // const AddProduct({Key? key}) : super(key: key);
+class AddProductPage extends StatelessWidget {
+  // const AddProductPage({Key? key}) : super(key: key);
 
   TextEditingController namaBarangController = TextEditingController(text: '');
   TextEditingController hargaJualController = TextEditingController(text: '');

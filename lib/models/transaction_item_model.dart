@@ -1,9 +1,12 @@
+import 'package:catet_kas/models/product_model.dart';
+
 class TransactionItemModel {
   late int? id;
   late int? usersId;
   late int? productsId;
   late int? transactionsId;
   late int? quantity;
+  late dynamic product;
 
   TransactionItemModel({
     this.id,
@@ -11,14 +14,16 @@ class TransactionItemModel {
     this.productsId,
     this.quantity,
     this.transactionsId,
+    this.product,
   });
 
-  TransactionItemModel.fromJson(Map<String, dynamic> json) {
+  TransactionItemModel.fromJson(Map<dynamic, dynamic> json) {
     id = json['id'];
     usersId = json['users_id'];
     productsId = json['products_id'];
     transactionsId = json['transactions_id'];
     quantity = json['quantity'];
+    product = ProductModel.fromJson(json['product']);
   }
 
   Map<String, dynamic> toJson() {
@@ -28,6 +33,7 @@ class TransactionItemModel {
       'products_id': productsId,
       'transactions_id': transactionsId,
       'quantity': quantity,
+      'product': product,
     };
   }
 }

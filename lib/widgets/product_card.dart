@@ -49,25 +49,9 @@ class _ProductCardState extends State<ProductCard> {
                   onChanged: (bool? value) {
                     setState(() {
                       isChecked = value!;
-                      if (value == true) {
-                        try {
-                          cartProvider.addCart(widget.product);
-                          cartProvider.carts.isNotEmpty
-                              ? print('cartnya uda masuk bang')
-                              : print('add cartnya gagal');
-                        } catch (e) {
-                          print(e);
-                        }
-                      } else {
-                        try {
-                          cartProvider.removeCart(widget.product.id!);
-                          cartProvider.productExist(widget.product)
-                              ? print('gagal hapus')
-                              : print('berhasil dihapus');
-                        } catch (e) {
-                          print(e);
-                        }
-                      }
+                      value == true
+                          ? cartProvider.addCart(widget.product)
+                          : cartProvider.removeCartByProduct(widget.product);
                     });
                   }),
               const SizedBox(width: 30),

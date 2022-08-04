@@ -34,6 +34,13 @@ class CartProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  removeCartByProduct(ProductModel product) {
+    int index =
+        _carts.indexWhere((element) => element.product.id == product.id);
+    _carts.removeAt(index);
+    notifyListeners();
+  }
+
   addQuantity(int id) {
     int index = _carts.indexWhere((element) => element.id == id);
     _carts[index].quantity++;
