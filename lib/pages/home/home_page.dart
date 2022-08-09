@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:catet_kas/models/shop_model.dart';
 import 'package:catet_kas/models/transaction_item_model.dart';
 import 'package:catet_kas/models/transaction_model.dart';
@@ -19,7 +17,7 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
-DateTime selectedMonthYear = DateTime(2022, 1);
+DateTime selectedMonthYear = DateTime.now();
 
 class _HomePageState extends State<HomePage> {
   @override
@@ -42,11 +40,16 @@ class _HomePageState extends State<HomePage> {
       allItems.addAll(items.map((item) => TransactionItemModel.fromJson(item)));
     }
 
+    List<_ChartData> data = [];
+    allItems.forEach((element) {
+      data.add(_ChartData(
+          name: element.product!.name!, quantity: element.quantity!));
+    });
+
     UserModel user = authProvider.user;
     ShopModel shop = shopProvider.shop;
 
     Future<void> handleMonthPicker() async {
-      // final localeObj = locale != null Locale(locale) : null;
       DateTime? selected = await showMonthYearPicker(
         context: context,
         initialDate: selectedMonthYear,
@@ -83,14 +86,15 @@ class _HomePageState extends State<HomePage> {
                       style: primaryTextStyle.copyWith(
                         fontSize: 20,
                         fontWeight: bold,
-                        color: cardColor,
+                        color: backgroundColor1,
                       ),
                     ),
+                    SizedBox(height: 5),
                     Text(
                       '@${user.username}',
                       style: primaryTextStyle.copyWith(
-                        fontSize: 14,
-                        color: cardColor.withOpacity(0.5),
+                        fontSize: 16,
+                        color: backgroundColor1.withOpacity(0.75),
                       ),
                     ),
                   ],
@@ -110,7 +114,7 @@ class _HomePageState extends State<HomePage> {
               alignment: Alignment.center,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(25),
-                color: cardColor,
+                color: backgroundColor1,
               ),
               child: Text(
                 shop.name!,
@@ -189,7 +193,7 @@ class _HomePageState extends State<HomePage> {
                 ),
                 const SizedBox(height: 7),
                 Text(
-                  'Rp. ${transactionProvider.totalTransaksi('PEMASUKAN', selectedMonthYear)}',
+                  'Rp. ${transactionProvider.totalTransaksi(type: 'PEMASUKAN', date: selectedMonthYear)}',
                   style: primaryTextStyle.copyWith(
                     color: pemasukanColor,
                     fontSize: 14,
@@ -215,7 +219,7 @@ class _HomePageState extends State<HomePage> {
                 ),
                 const SizedBox(height: 7),
                 Text(
-                  'Rp. ${transactionProvider.totalTransaksi('PENGELUARAN', selectedMonthYear)}',
+                  'Rp. ${transactionProvider.totalTransaksi(type: 'PENGELUARAN', date: selectedMonthYear)}',
                   style: primaryTextStyle.copyWith(
                     color: pengeluaranColor,
                     fontSize: 14,
@@ -244,7 +248,7 @@ class _HomePageState extends State<HomePage> {
           children: [
             Text(
               'Barang yang paling \nsering dibeli',
-              style: primaryTextStyle.copyWith(fontSize: 16),
+              style: primaryTextStyle.copyWith(fontSize: 18),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 20),
@@ -262,9 +266,9 @@ class _HomePageState extends State<HomePage> {
                     begin: Alignment.bottomLeft,
                     end: Alignment.topRight,
                   ),
-                  dataSource: allItems,
-                  xValueMapper: (dynamic items, _) => items.product.name,
-                  yValueMapper: (dynamic items, _) => items.quantity,
+                  dataSource: data,
+                  xValueMapper: (dynamic item, _) => item.name,
+                  yValueMapper: (dynamic item, _) => item.quantity,
                   name: 'Jumlah barang dari setiap produk',
                   // Enable data label`
                   // dataLabelSettings: const DataLabelSettings(isVisible: true),
@@ -300,4 +304,11 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
+}
+
+class _ChartData {
+  String name;
+  int quantity;
+
+  _ChartData({required this.name, required this.quantity});
 }

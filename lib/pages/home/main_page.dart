@@ -80,7 +80,7 @@ class _MainPageState extends State<MainPage> {
         case 0:
           return HomePage();
         case 1:
-          return const CatetPage();
+          return CatetPage();
         case 2:
           return ProfilePage();
         default:

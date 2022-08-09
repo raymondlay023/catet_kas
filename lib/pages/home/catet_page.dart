@@ -2,7 +2,6 @@ import 'package:catet_kas/providers/transaction_provider.dart';
 import 'package:catet_kas/theme.dart';
 import 'package:catet_kas/widgets/transaction_card.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:grouped_list/grouped_list.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -37,6 +36,11 @@ class _CatetPageState extends State<CatetPage> {
         Provider.of<TransactionProvider>(context);
 
     double gainLossTotal = transactionProvider.gainLoss();
+
+    _formatDecimal(double value) {
+      if (value % 1 == 0) return value.toStringAsFixed(0).toString();
+      return value.toString();
+    }
 
     Widget emptyState() {
       return Container(
@@ -86,7 +90,7 @@ class _CatetPageState extends State<CatetPage> {
                     ),
                     const SizedBox(height: 7),
                     Text(
-                      'Rp. ${transactionProvider.totalTransaksi('PEMASUKAN')}',
+                      'Rp. ${_formatDecimal(transactionProvider.totalTransaksi(type: 'PEMASUKAN'))}',
                       style: primaryTextStyle.copyWith(
                         color: pemasukanColor,
                         fontSize: 14,
@@ -112,7 +116,7 @@ class _CatetPageState extends State<CatetPage> {
                     ),
                     const SizedBox(height: 7),
                     Text(
-                      'Rp. ${transactionProvider.totalTransaksi('PENGELUARAN')}',
+                      'Rp. ${_formatDecimal(transactionProvider.totalTransaksi(type: 'PENGELUARAN'))}',
                       style: primaryTextStyle.copyWith(
                         color: pengeluaranColor,
                         fontSize: 14,
@@ -148,7 +152,7 @@ class _CatetPageState extends State<CatetPage> {
                     ),
                   ),
                   Text(
-                    'Rp. ${gainLossTotal.abs()}',
+                    'Rp. ${_formatDecimal(gainLossTotal.abs())}',
                     style: primaryTextStyle.copyWith(
                       fontSize: 16,
                       fontWeight: bold,
@@ -236,6 +240,7 @@ class _CatetPageState extends State<CatetPage> {
         padding: const EdgeInsets.all(15),
         decoration: BoxDecoration(borderRadius: BorderRadius.circular(15)),
         child: GroupedListView<dynamic, String>(
+          shrinkWrap: true,
           separator: const Divider(height: 5),
           itemComparator: (item1, item2) => item1.note.compareTo(item2.note),
           groupComparator: (value1, value2) => value2.compareTo(value1),
@@ -246,37 +251,42 @@ class _CatetPageState extends State<CatetPage> {
             children: [
               Container(
                 width: 330,
-                padding: const EdgeInsets.all(15),
+                padding: const EdgeInsets.symmetric(vertical: 15),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
                   color: Colors.black.withAlpha(25),
                 ),
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Container(
-                      alignment: Alignment.center,
-                      width: 115,
-                      child: Text(
-                        DateFormat('dd-MMM-yyyy').format(value.createdAt),
-                        style: primaryTextStyle.copyWith(
-                          fontSize: 14,
-                          color: primaryTextColor,
+                    Expanded(
+                      child: Container(
+                        alignment: Alignment.center,
+                        width: 115,
+                        child: Text(
+                          DateFormat('dd-MMM-yyyy').format(value.createdAt),
+                          style: primaryTextStyle.copyWith(
+                            fontWeight: semiBold,
+                            fontSize: 14,
+                            color: primaryTextColor,
+                          ),
                         ),
                       ),
                     ),
-                    Container(
-                      alignment: Alignment.center,
-                      width: 115,
-                      child: Text(
-                        'Rp. ${transactionProvider.gainLoss(value.createdAt).abs()}',
-                        style: primaryTextStyle.copyWith(
-                          fontSize: 14,
-                          color: transactionProvider
-                                  .gainLoss(value.createdAt)
-                                  .isNegative
-                              ? alertColor
-                              : pemasukanColor,
+                    Expanded(
+                      child: Container(
+                        alignment: Alignment.center,
+                        width: 115,
+                        child: Text(
+                          'Rp. ${_formatDecimal(transactionProvider.gainLoss(date: value.createdAt).abs())}',
+                          style: primaryTextStyle.copyWith(
+                            fontSize: 14,
+                            fontWeight: semiBold,
+                            color: transactionProvider
+                                    .gainLoss(date: value.createdAt)
+                                    .isNegative
+                                ? alertColor
+                                : pemasukanColor,
+                          ),
                         ),
                       ),
                     ),
@@ -313,24 +323,38 @@ class _CatetPageState extends State<CatetPage> {
       );
     }
 
-    Widget transactionList() {
+    Widget content() {
+      return ListView(
+        padding: EdgeInsets.symmetric(horizontal: defaultMargin),
+        children: [
+          summaryCard(),
+          laporanKeuanganButton(),
+          // cari(),
+          transactions(),
+        ],
+      );
+    }
+
+    Widget futureContent() {
       return SizedBox(
         width: double.infinity,
-        height: MediaQuery.of(context).size.width / 1.3,
         child: FutureBuilder(
           future: dataFuture,
           builder: (context, snapshot) {
             switch (snapshot.connectionState) {
               case ConnectionState.waiting:
-                return const Center(child: CircularProgressIndicator());
+                return Center(
+                    child: CircularProgressIndicator(
+                  color: primaryColor,
+                ));
               case ConnectionState.done:
               default:
                 if (snapshot.hasError) {
-                  return const Center(child: Text('error :'));
+                  return Center(child: Text('error : ${snapshot.error}'));
                 } else if (snapshot.hasData) {
-                  return transactions();
+                  return content();
                 } else {
-                  return const Text('something went wrong!');
+                  return emptyState();
                 }
             }
           },
@@ -346,7 +370,7 @@ class _CatetPageState extends State<CatetPage> {
           'Transaksi',
           style: primaryTextStyle.copyWith(
             fontSize: 22,
-            color: cardColor,
+            color: backgroundColor1,
           ),
         ),
         centerTitle: true,
@@ -354,41 +378,19 @@ class _CatetPageState extends State<CatetPage> {
       );
     }
 
-    Widget customFloatingButton() {
-      return SpeedDial(
-        animatedIcon: AnimatedIcons.menu_close,
-        activeLabel: const Text('Catat'),
-        animatedIconTheme: const IconThemeData.fallback(),
+    Widget customFloatingActionButton() {
+      return FloatingActionButton(
+        onPressed: () => Navigator.pushNamed(context, '/catat-transaksi'),
+        child: Icon(Icons.create_outlined),
         backgroundColor: buttonColor,
-        overlayColor: Colors.black,
-        overlayOpacity: 0.4,
-        spacing: 10,
-        children: [
-          SpeedDialChild(
-            onTap: () {
-              Navigator.pushNamed(context, '/catat-transaksi');
-            },
-            child: const Icon(Icons.create_outlined),
-            label: 'Catat Transaksi',
-            backgroundColor: pemasukanColor,
-          ),
-        ],
       );
     }
 
     return Scaffold(
       backgroundColor: backgroundColor1,
       appBar: customAppBar(),
-      body: ListView(
-        padding: EdgeInsets.symmetric(horizontal: defaultMargin),
-        children: [
-          summaryCard(),
-          laporanKeuanganButton(),
-          // cari(),
-          transactionList(),
-        ],
-      ),
-      floatingActionButton: customFloatingButton(),
+      body: futureContent(),
+      floatingActionButton: customFloatingActionButton(),
     );
   }
 }

@@ -4,7 +4,7 @@ import 'package:catet_kas/models/transaction_model.dart';
 import 'package:http/http.dart' as http;
 
 class TransactionService {
-  String baseUrl = 'http://192.168.1.5:8000/api/transactions';
+  String baseUrl = 'http://192.168.1.6:8000/api/transactions';
 
   Future<List<TransactionModel>> getTransactions(String token) async {
     var url = Uri.parse('$baseUrl/read');
@@ -99,6 +99,52 @@ class TransactionService {
     if (response.statusCode == 200) {
       var data = jsonDecode(response.body)['data'];
       print(data['message']);
+    } else {
+      throw Exception('Transaksi gagal dihapus!');
+    }
+  }
+
+  Future<TransactionModel> update({
+    required String token,
+    required int id,
+    required String note,
+    required double total,
+    required String type,
+    required List items,
+  }) async {
+    var url = Uri.parse('$baseUrl/update?id=$id');
+    var headers = {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': token,
+    };
+
+    var body = jsonEncode({
+      'note': note,
+      'total': total,
+      'type': type,
+      'items': items
+          .map(
+            (item) => {
+              'id': item.product.id,
+              'quantity': item.quantity,
+            },
+          )
+          .toList(),
+    });
+
+    var response = await http.post(
+      url,
+      headers: headers,
+      body: body,
+    );
+
+    print(response.body);
+
+    if (response.statusCode == 200) {
+      var data = jsonDecode(response.body)['data'];
+      TransactionModel transaction = TransactionModel.fromJson(data);
+      return transaction;
     } else {
       throw Exception('Transaksi gagal dihapus!');
     }

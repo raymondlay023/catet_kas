@@ -6,7 +6,7 @@ class TransactionItemModel {
   late int? productsId;
   late int? transactionsId;
   late int? quantity;
-  late dynamic product;
+  late ProductModel? product;
 
   TransactionItemModel({
     this.id,

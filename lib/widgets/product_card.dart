@@ -31,6 +31,11 @@ class _ProductCardState extends State<ProductCard> {
   Widget build(BuildContext context) {
     CartProvider cartProvider = Provider.of<CartProvider>(context);
 
+    _formatDecimal(double value) {
+      if (value % 1 == 0) return value.toStringAsFixed(0).toString();
+      return value.toString();
+    }
+
     return GestureDetector(
       onTap: (() => isChecked = true),
       child: Container(
@@ -69,7 +74,7 @@ class _ProductCardState extends State<ProductCard> {
                   ),
                   const SizedBox(height: 10),
                   Text(
-                    'Rp. ${widget.product.price}',
+                    'Rp. ${_formatDecimal(widget.product.price!)}',
                     style: secondaryTextStyle.copyWith(
                       fontSize: 12,
                       color: Colors.black.withOpacity(0.5),

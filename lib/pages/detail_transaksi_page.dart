@@ -1,4 +1,6 @@
 import 'package:catet_kas/models/transaction_model.dart';
+import 'package:catet_kas/pages/edit_transaksi_page.dart';
+import 'package:catet_kas/providers/cart_provider.dart';
 import 'package:catet_kas/providers/shop_provider.dart';
 import 'package:catet_kas/providers/transaction_provider.dart';
 import 'package:catet_kas/theme.dart';
@@ -18,14 +20,9 @@ class DetailTransaksiPage extends StatelessWidget {
     TransactionProvider transactionProvider =
         Provider.of<TransactionProvider>(context);
 
-    Widget verticalDivider(double height) {
-      return Container(
-        height: height,
-        width: 1,
-        decoration: BoxDecoration(
-          color: primaryTextColor.withOpacity(0.5),
-        ),
-      );
+    _formatDecimal(double value) {
+      if (value % 1 == 0) return value.toStringAsFixed(0).toString();
+      return value.toString();
     }
 
     Widget content() {
@@ -171,7 +168,7 @@ class DetailTransaksiPage extends StatelessWidget {
               Expanded(
                 flex: 1,
                 child: Text(
-                  'Rp. ${transaction.total}',
+                  'Rp. ${_formatDecimal(transaction.total!)}',
                   style: TextStyle(fontSize: 15),
                   textAlign: TextAlign.center,
                 ),
@@ -245,7 +242,7 @@ class DetailTransaksiPage extends StatelessWidget {
           'Detail Transaksi',
           style: primaryTextStyle.copyWith(
             fontSize: 20,
-            color: cardColor,
+            color: backgroundColor1,
           ),
         ),
         backgroundColor: primaryColor,
@@ -254,15 +251,22 @@ class DetailTransaksiPage extends StatelessWidget {
             splashRadius: 25,
             icon: Icon(
               Icons.mode_edit,
-              color: cardColor,
+              color: backgroundColor1,
             ),
-            onPressed: () {},
+            onPressed: () => Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: ((context) => EditTransaksiPage(
+                      transaction: transaction,
+                    )),
+              ),
+            ),
           ),
           IconButton(
             splashRadius: 25,
             icon: Icon(
               Icons.delete,
-              color: cardColor,
+              color: backgroundColor1,
             ),
             onPressed: handleDeleteTransaction,
           ),

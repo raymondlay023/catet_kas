@@ -4,7 +4,7 @@ import 'package:catet_kas/models/product_model.dart';
 import 'package:http/http.dart' as http;
 
 class ProductService {
-  String baseUrl = 'http://192.168.1.5:8000/api/products';
+  String baseUrl = 'http://192.168.1.6:8000/api/products';
 
   Future<List<ProductModel>> getProducts(String token) async {
     var url = Uri.parse('$baseUrl/read');

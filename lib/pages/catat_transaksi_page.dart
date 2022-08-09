@@ -99,6 +99,7 @@ class _CatatTransaksiState extends State<CatatTransaksiPage> {
                 borderRadius: BorderRadius.circular(5),
               ),
               child: TextButton(
+                style: TextButton.styleFrom(primary: pemasukanColor),
                 onPressed: () => setState(() {
                   type = 'PEMASUKAN';
                 }),
@@ -125,6 +126,7 @@ class _CatatTransaksiState extends State<CatatTransaksiPage> {
                 borderRadius: BorderRadius.circular(5),
               ),
               child: TextButton(
+                style: TextButton.styleFrom(primary: pengeluaranColor),
                 onPressed: () => setState(() {
                   type = 'PENGELUARAN';
                 }),
@@ -153,6 +155,7 @@ class _CatatTransaksiState extends State<CatatTransaksiPage> {
           borderRadius: BorderRadius.circular(5),
         ),
         child: TextButton(
+          style: TextButton.styleFrom(primary: primaryTextColor),
           onPressed: () {
             Navigator.pushNamed(context, '/product-list');
           },
@@ -257,6 +260,7 @@ class _CatatTransaksiState extends State<CatatTransaksiPage> {
           borderRadius: BorderRadius.circular(15),
         ),
         child: TextButton(
+          style: TextButton.styleFrom(primary: buttonColor),
           child: Text(
             'Simpan',
             style: secondaryTextStyle.copyWith(
@@ -281,8 +285,8 @@ class _CatatTransaksiState extends State<CatatTransaksiPage> {
       );
     }
 
-    return Scaffold(
-      appBar: AppBar(
+    PreferredSizeWidget customAppBar() {
+      return AppBar(
         toolbarHeight: 65,
         backgroundColor: primaryColor,
         title: Text(
@@ -291,7 +295,11 @@ class _CatatTransaksiState extends State<CatatTransaksiPage> {
             color: backgroundColor1,
           ),
         ),
-      ),
+      );
+    }
+
+    return Scaffold(
+      appBar: customAppBar(),
       body: ListView(
         padding: EdgeInsets.symmetric(horizontal: defaultMargin),
         children: [

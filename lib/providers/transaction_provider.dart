@@ -66,35 +66,63 @@ class TransactionProvider with ChangeNotifier {
     }
   }
 
-  double totalTransaksi([String? tipe, DateTime? tanggal]) {
+  Future<bool> update({
+    required String token,
+    required int id,
+    required String note,
+    required double total,
+    required String type,
+    required List items,
+  }) async {
+    try {
+      await TransactionService().update(
+        token: token,
+        id: id,
+        note: note,
+        total: total,
+        type: type,
+        items: items,
+      );
+      return true;
+    } catch (e) {
+      print(e);
+      return false;
+    }
+  }
+
+  double totalTransaksi(
+      {String? type, DateTime? date, List<TransactionModel>? transactions}) {
     double total = 0;
-    if (tanggal != null && tipe != null) {
-      for (var item in _transactions.where((element) =>
-          element.type == tipe && element.createdAt!.month == tanggal.month)) {
+    final __transactions = transactions ?? _transactions;
+    if (date != null && type != null) {
+      for (var item in __transactions.where((element) =>
+          element.type == type && element.createdAt!.month == date.month)) {
         total += (item.total!);
       }
-    } else if (tanggal != null) {
+    } else if (date != null) {
       for (var item
-          in _transactions.where((element) => element.createdAt! == tanggal)) {
+          in __transactions.where((element) => element.createdAt! == date)) {
         total += (item.total!);
       }
-    } else if (tipe != null) {
-      for (var item in _transactions.where((element) => element.type == tipe)) {
+    } else if (type != null) {
+      for (var item
+          in __transactions.where((element) => element.type == type)) {
         total += (item.total!);
       }
     } else {
-      for (var item in _transactions) {
+      for (var item in __transactions) {
         total += (item.total!);
       }
     }
     return total;
   }
 
-  double gainLoss([DateTime? tanggal]) {
+  double gainLoss({DateTime? date, List<TransactionModel>? transactions}) {
     double total = 0;
-    if (tanggal != null) {
-      for (var item in _transactions
-          .where((transaction) => transaction.createdAt! == tanggal)) {
+    final __transactions = transactions ?? _transactions;
+    if (date != null) {
+      for (var item in __transactions
+          .where((transaction) => transaction.createdAt! == date)) {
         if (item.type == 'PEMASUKAN') {
           total += (item.total!);
         } else {
@@ -102,7 +130,7 @@ class TransactionProvider with ChangeNotifier {
         }
       }
     } else {
-      for (var item in _transactions) {
+      for (var item in __transactions) {
         if (item.type == 'PEMASUKAN') {
           total += (item.total!);
         } else {

@@ -33,7 +33,7 @@ class _LoadingPageState extends State<LoadingPage> {
     final prefs = await SharedPreferences.getInstance();
     prefs.setString('token', authProvider.user.token!);
     print(prefs.getString('token'));
-    Navigator.pushNamed(context, '/home');
+    Navigator.pushReplacementNamed(context, '/home');
   }
 
   @override

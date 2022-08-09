@@ -31,8 +31,6 @@ class _ProductListState extends State<ProductListPage> {
     return products;
   }
 
-  // bool isChecked = false;
-
   @override
   Widget build(BuildContext context) {
     ProductProvider productProvider = Provider.of<ProductProvider>(context);
@@ -189,9 +187,8 @@ class _ProductListState extends State<ProductListPage> {
       );
     }
 
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
+    PreferredSizeWidget customAppBar() {
+      return AppBar(
         toolbarHeight: 65,
         backgroundColor: primaryColor,
         title: Text(
@@ -208,7 +205,12 @@ class _ProductListState extends State<ProductListPage> {
             },
           ),
         ],
-      ),
+      );
+    }
+
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: customAppBar(),
       body: Container(
         padding: const EdgeInsets.only(top: 20),
         child: Column(

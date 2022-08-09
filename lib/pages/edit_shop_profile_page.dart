@@ -89,7 +89,7 @@ class _EditShopProfilePageState extends State<EditShopProfilePage> {
               style: primaryTextStyle.copyWith(
                 fontSize: 14,
                 fontWeight: bold,
-                color: cardColor,
+                color: thirdColor,
               ),
             ),
             TextFormField(
@@ -127,7 +127,7 @@ class _EditShopProfilePageState extends State<EditShopProfilePage> {
               style: primaryTextStyle.copyWith(
                 fontSize: 14,
                 fontWeight: bold,
-                color: cardColor,
+                color: thirdColor,
               ),
             ),
             TextFormField(
@@ -165,7 +165,7 @@ class _EditShopProfilePageState extends State<EditShopProfilePage> {
               style: primaryTextStyle.copyWith(
                 fontSize: 14,
                 fontWeight: bold,
-                color: cardColor,
+                color: thirdColor,
               ),
             ),
             TextFormField(
@@ -218,8 +218,8 @@ class _EditShopProfilePageState extends State<EditShopProfilePage> {
       );
     }
 
-    return Scaffold(
-      appBar: AppBar(
+    PreferredSizeWidget customAppBar() {
+      return AppBar(
         toolbarHeight: 80,
         backgroundColor: backgroundColor4,
         elevation: 0,
@@ -233,7 +233,7 @@ class _EditShopProfilePageState extends State<EditShopProfilePage> {
           'Edit Profil Usaha',
           style: primaryTextStyle.copyWith(
             fontSize: 22,
-            color: cardColor,
+            color: backgroundColor1,
           ),
         ),
         centerTitle: true,
@@ -243,7 +243,11 @@ class _EditShopProfilePageState extends State<EditShopProfilePage> {
             icon: const Icon(Icons.check),
           ),
         ],
-      ),
+      );
+    }
+
+    return Scaffold(
+      appBar: customAppBar(),
       backgroundColor: backgroundColor2,
       body: SingleChildScrollView(
         child: content(),

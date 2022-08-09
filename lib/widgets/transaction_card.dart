@@ -8,6 +8,11 @@ class TransactionCard extends StatelessWidget {
   const TransactionCard(this.transaction);
   @override
   Widget build(BuildContext context) {
+    _formatDecimal(double value) {
+      if (value % 1 == 0) return value.toStringAsFixed(0).toString();
+      return value.toString();
+    }
+
     return GestureDetector(
       onTap: () => Navigator.push(
         context,
@@ -42,7 +47,7 @@ class TransactionCard extends StatelessWidget {
               child: Container(
                 alignment: Alignment.center,
                 child: Text(
-                  'Rp. ${transaction.total}',
+                  'Rp. ${_formatDecimal(transaction.total!)}',
                   textAlign: TextAlign.center,
                   style: primaryTextStyle.copyWith(
                     fontSize: 12,

@@ -76,10 +76,10 @@ class _ProfilePageState extends State<ProfilePage> {
               style: secondaryTextStyle.copyWith(
                 fontSize: 16,
                 fontWeight: bold,
-                color: cardColor,
+                color: backgroundColor1,
               ),
             ),
-            const SizedBox(height: 25),
+            const SizedBox(height: 20),
             GestureDetector(
               onTap: (() => Navigator.pushNamed(context, '/edit-profile')),
               child: menuItem('Edit Profil'),
@@ -110,14 +110,16 @@ class _ProfilePageState extends State<ProfilePage> {
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
                     'Hallo, ${user.name}',
                     style: primaryTextStyle.copyWith(
                       fontSize: 20,
-                      color: cardColor,
+                      color: backgroundColor1,
                     ),
                   ),
+                  const SizedBox(height: 5),
                   Text(
                     '@${user.username}',
                     style: primaryTextStyle.copyWith(
@@ -139,27 +141,6 @@ class _ProfilePageState extends State<ProfilePage> {
         ),
       );
     }
-
-    // Widget builder() {
-    //   return FutureBuilder(
-    //     future: dataFuture,
-    //     builder: (context, snapshot) {
-    //       switch (snapshot.connectionState) {
-    //         case ConnectionState.waiting:
-    //           return const Center(child: CircularProgressIndicator());
-    //         case ConnectionState.done:
-    //         default:
-    //           if (snapshot.hasError) {
-    //             return const Center(child: Text('error :'));
-    //           } else if (snapshot.hasData) {
-    //             return profileData();
-    //           } else {
-    //             return const Center(child: CircularProgressIndicator());
-    //           }
-    //       }
-    //     },
-    //   );
-    // }
 
     PreferredSizeWidget customAppbar() {
       return AppBar(

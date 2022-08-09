@@ -1,4 +1,3 @@
-import 'package:catet_kas/models/transaction_model.dart';
 import 'package:catet_kas/providers/transaction_provider.dart';
 import 'package:catet_kas/theme.dart';
 import 'package:flutter/material.dart';
@@ -13,8 +12,8 @@ class LaporanKeuanganPage extends StatefulWidget {
 class _LaporanKeuanganPageState extends State<LaporanKeuanganPage> {
   // const LaporanKeuanganPage({Key? key}) : super(key: key);
   DateTimeRange dateRange = DateTimeRange(
-    start: DateTime.now(),
-    end: DateTime.now().add(Duration(days: 3)),
+    start: DateTime.now().subtract(Duration(days: 30)),
+    end: DateTime.now(),
   );
 
   @override
@@ -24,7 +23,15 @@ class _LaporanKeuanganPageState extends State<LaporanKeuanganPage> {
     TransactionProvider transactionProvider =
         Provider.of<TransactionProvider>(context);
 
-    // var filteredTransactions = transactionProvider.transactions.
+    final filteredTransactions = transactionProvider.transactionsBetweenDates(
+        start: startDate, end: endDate);
+    double gainLossTotal =
+        transactionProvider.gainLoss(transactions: filteredTransactions);
+
+    _formatDecimal(double value) {
+      if (value % 1 == 0) return value.toStringAsFixed(0).toString();
+      return value.toString();
+    }
 
     Future pickDateRange() async {
       DateTimeRange? newDateRange = await showDateRangePicker(
@@ -45,10 +52,17 @@ class _LaporanKeuanganPageState extends State<LaporanKeuanganPage> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(primary: buttonColor),
+            TextButton.icon(
+              icon: Icon(
+                Icons.calendar_month,
+                color: primaryColor,
+              ),
+              style: TextButton.styleFrom(
+                primary: primaryColor.withOpacity(0.25),
+                side: BorderSide(color: primaryColor),
+              ),
               onPressed: pickDateRange,
-              child: Text(
+              label: Text(
                 DateFormat('dd/MM/yyy').format(startDate),
                 style: TextStyle(color: Colors.black87),
               ),
@@ -59,10 +73,17 @@ class _LaporanKeuanganPageState extends State<LaporanKeuanganPage> {
               width: 10,
               decoration: BoxDecoration(color: Colors.black),
             ),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(primary: buttonColor),
+            TextButton.icon(
+              icon: Icon(
+                Icons.calendar_month,
+                color: primaryColor,
+              ),
+              style: TextButton.styleFrom(
+                primary: primaryColor.withOpacity(0.25),
+                side: BorderSide(color: primaryColor),
+              ),
               onPressed: pickDateRange,
-              child: Text(
+              label: Text(
                 DateFormat('dd/MM/yyy').format(endDate),
                 style: TextStyle(color: Colors.black87),
               ),
@@ -72,85 +93,217 @@ class _LaporanKeuanganPageState extends State<LaporanKeuanganPage> {
       );
     }
 
-    final transactionFiltered = transactionProvider.transactionsBetweenDates(
-        start: startDate, end: endDate);
+    Widget box({String text = '', required Color? color}) {
+      return Container(
+        width: double.infinity,
+        padding: EdgeInsets.symmetric(vertical: 20),
+        decoration: BoxDecoration(
+          color: color!,
+        ),
+        child: Text(
+          text,
+          textAlign: TextAlign.center,
+        ),
+      );
+    }
 
-    Widget transactionsList() {
+    Widget transactionListHeader() {
       return Container(
         margin: EdgeInsets.only(top: defaultMargin),
-        child: ListView(shrinkWrap: true, children: [
+        child: Row(
+          children: [
+            Expanded(flex: 2, child: box(text: 'Transaksi', color: thirdColor)),
+            Expanded(flex: 1, child: box(text: 'Pemasukan', color: thirdColor)),
+            Expanded(
+                flex: 1, child: box(text: 'Pengeluaran', color: thirdColor)),
+          ],
+        ),
+      );
+    }
+
+    Widget transactionsList() {
+      return ListView(
+        shrinkWrap: true,
+        children: [
           Row(
             children: [
               Expanded(
                 flex: 2,
-                child: Container(
-                  padding: EdgeInsets.symmetric(vertical: 20),
-                  decoration: BoxDecoration(
-                    color: Colors.black26,
-                    border: Border.all(width: 1, color: Colors.black54),
-                  ),
-                  child: Column(
-                    children: transactionFiltered
-                        .map((transaction) => Text('${transaction.note}'))
-                        .toList(),
-                  ),
+                child: Column(
+                  children: filteredTransactions
+                      .map((transaction) => box(
+                          color: thirdTextColor.withOpacity(0.25),
+                          text: transaction.note!))
+                      .toList(),
                 ),
               ),
               Expanded(
                 flex: 1,
-                child: Container(
-                  padding: EdgeInsets.symmetric(vertical: 20),
-                  decoration: BoxDecoration(
-                    color: pemasukanColor.withOpacity(0.7),
-                    border: Border.all(
-                      color: pemasukanColor,
-                      width: 1,
-                    ),
-                  ),
-                  child: Column(
-                    children: transactionFiltered.map((transaction) {
-                      if (transaction.type == 'PEMASUKAN') {
-                        return Text('${transaction.total}');
-                      } else {
-                        return Text('');
-                      }
-                    }).toList(),
-                  ),
+                child: Column(
+                  children: filteredTransactions.map((transaction) {
+                    if (transaction.type == 'PEMASUKAN') {
+                      return box(
+                          text: transaction.total.toString(),
+                          color: pemasukanColor.withOpacity(0.25));
+                    } else {
+                      return box(color: pemasukanColor.withOpacity(0.25));
+                    }
+                  }).toList(),
                 ),
               ),
               Expanded(
                 flex: 1,
-                child: Container(
-                  padding: EdgeInsets.symmetric(vertical: 20),
-                  decoration: BoxDecoration(
-                    color: pengeluaranColor.withOpacity(0.7),
-                    border: Border.all(
-                      color: pengeluaranColor,
-                      width: 1,
-                    ),
-                  ),
-                  child: Column(
-                    children: transactionFiltered.map((transaction) {
-                      if (transaction.type == 'PENGELUARAN') {
-                        return Text('${transaction.total}');
-                      } else {
-                        return Text('');
-                      }
-                    }).toList(),
-                  ),
+                child: Column(
+                  children: filteredTransactions.map((transaction) {
+                    if (transaction.type == 'PENGELUARAN') {
+                      return box(
+                          text: transaction.total.toString(),
+                          color: pengeluaranColor.withOpacity(0.25));
+                    } else {
+                      return box(color: pengeluaranColor.withOpacity(0.25));
+                    }
+                  }).toList(),
                 ),
               ),
             ],
           ),
-        ]),
+        ],
+      );
+    }
+
+    Widget summaryCard() {
+      return Container(
+        width: 340,
+        height: 160,
+        margin: const EdgeInsets.only(
+          top: 20,
+        ),
+        padding: const EdgeInsets.symmetric(
+          horizontal: 20,
+          vertical: 15,
+        ),
+        decoration: BoxDecoration(
+          color: cardColor,
+          borderRadius: BorderRadius.circular(15),
+        ),
+        child: Column(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                Column(
+                  children: [
+                    Text(
+                      'Total Penjualan',
+                      style: primaryTextStyle.copyWith(
+                        fontSize: 12,
+                      ),
+                    ),
+                    const SizedBox(height: 7),
+                    Text(
+                      'Rp. ${_formatDecimal(transactionProvider.totalTransaksi(type: 'PEMASUKAN', transactions: filteredTransactions))}',
+                      style: primaryTextStyle.copyWith(
+                        color: pemasukanColor,
+                        fontSize: 14,
+                        fontWeight: bold,
+                      ),
+                    ),
+                  ],
+                ),
+                Container(
+                  height: 65,
+                  width: 1,
+                  decoration: BoxDecoration(
+                    color: primaryTextColor.withOpacity(0.5),
+                  ),
+                ),
+                Column(
+                  children: [
+                    Text(
+                      'Total Pengeluaran',
+                      style: primaryTextStyle.copyWith(
+                        fontSize: 12,
+                      ),
+                    ),
+                    const SizedBox(height: 7),
+                    Text(
+                      'Rp. ${_formatDecimal(transactionProvider.totalTransaksi(type: 'PENGELUARAN', transactions: filteredTransactions))}',
+                      style: primaryTextStyle.copyWith(
+                        color: pengeluaranColor,
+                        fontSize: 14,
+                        fontWeight: bold,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+            const SizedBox(height: 8),
+            Container(
+              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 35),
+              width: double.infinity,
+              height: 50,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(15),
+                color: gainLossTotal.isNegative
+                    ? pengeluaranColor.withOpacity(0.25)
+                    : pemasukanColor.withOpacity(0.25),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    gainLossTotal.isNegative ? 'Rugi' : 'Untung',
+                    style: primaryTextStyle.copyWith(
+                      fontSize: 16,
+                      fontWeight: bold,
+                      color: gainLossTotal.isNegative
+                          ? pengeluaranColor
+                          : pemasukanColor,
+                    ),
+                  ),
+                  Text(
+                    'Rp. ${_formatDecimal(gainLossTotal.abs())}',
+                    style: primaryTextStyle.copyWith(
+                      fontSize: 16,
+                      fontWeight: bold,
+                      color: gainLossTotal.isNegative
+                          ? pengeluaranColor
+                          : pemasukanColor,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       );
     }
 
     Widget content() {
       return Column(
         children: [
+          summaryCard(),
           dateRangePicker(),
-          transactionsList(),
+          filteredTransactions.isNotEmpty
+              ? Column(
+                  children: [
+                    transactionListHeader(),
+                    const Divider(height: 2),
+                    transactionsList(),
+                  ],
+                )
+              : Container(
+                  margin: EdgeInsets.only(top: defaultMargin * 2),
+                  child: Text(
+                    'There\'s no transactions \nbetween those dates :(',
+                    style: primaryTextStyle.copyWith(
+                      color: Colors.black38,
+                      fontSize: 20,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
         ],
       );
     }
@@ -162,7 +315,7 @@ class _LaporanKeuanganPageState extends State<LaporanKeuanganPage> {
           'Laporan Keuangan',
           style: primaryTextStyle.copyWith(
             fontSize: 20,
-            color: cardColor,
+            color: backgroundColor1,
           ),
         ),
         backgroundColor: primaryColor,

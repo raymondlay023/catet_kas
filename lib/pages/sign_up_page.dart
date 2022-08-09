@@ -242,7 +242,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   ),
                 ),
                 GestureDetector(
-                  onTap: () => Navigator.pushNamed(context, '/sign-in'),
+                  onTap: () => Navigator.pop(context),
                   child: Text(
                     'Masuk disini',
                     style: secondaryTextStyle.copyWith(

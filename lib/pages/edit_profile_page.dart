@@ -99,7 +99,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
               style: primaryTextStyle.copyWith(
                 fontSize: 14,
                 fontWeight: bold,
-                color: cardColor,
+                color: thirdColor,
               ),
             ),
             TextFormField(
@@ -137,7 +137,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
               style: primaryTextStyle.copyWith(
                 fontSize: 14,
                 fontWeight: bold,
-                color: cardColor,
+                color: thirdColor,
               ),
             ),
             TextFormField(
@@ -175,7 +175,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
               style: primaryTextStyle.copyWith(
                 fontSize: 14,
                 fontWeight: bold,
-                color: cardColor,
+                color: thirdColor,
               ),
             ),
             TextFormField(
@@ -228,9 +228,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
       );
     }
 
-    return Scaffold(
-      backgroundColor: backgroundColor2,
-      appBar: AppBar(
+    PreferredSizeWidget customAppBar() {
+      return AppBar(
         toolbarHeight: 80,
         leading: IconButton(
           onPressed: () {
@@ -244,7 +243,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
         title: Text(
           'Edit Profil',
           style: primaryTextStyle.copyWith(
-            color: cardColor,
+            color: backgroundColor1,
             fontSize: 22,
           ),
         ),
@@ -254,7 +253,12 @@ class _EditProfilePageState extends State<EditProfilePage> {
             icon: const Icon(Icons.check),
           ),
         ],
-      ),
+      );
+    }
+
+    return Scaffold(
+      backgroundColor: backgroundColor2,
+      appBar: customAppBar(),
       body: SingleChildScrollView(
         child: Column(
           children: [
