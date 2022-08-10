@@ -1,3 +1,4 @@
+import 'package:catet_kas/pages/add_shop_page.dart';
 import 'package:catet_kas/pages/catat_transaksi_page.dart';
 import 'package:catet_kas/pages/laporan_keuangan_page.dart';
 import 'package:catet_kas/pages/loading_page.dart';
@@ -55,6 +56,8 @@ class MyApp extends StatelessWidget {
           '/': (context) => const SplashPage(),
           '/sign-in': (context) => SignInPage(),
           '/sign-up': (context) => SignUpPage(),
+          '/add-shop': (context) => const AddShopPage(),
+          '/loading': (context) => const LoadingPage(),
           '/home': (context) => const MainPage(),
           '/edit-profile': (context) => const EditProfilePage(),
           '/edit-shop-profile': (context) => const EditShopProfilePage(),
@@ -62,7 +65,6 @@ class MyApp extends StatelessWidget {
           '/product-list': (context) => const ProductListPage(),
           '/add-product': (context) => AddProductPage(),
           '/laporan-keuangan': (context) => LaporanKeuanganPage(),
-          '/loading': (context) => const LoadingPage(),
         },
       ),
     );

@@ -1,4 +1,4 @@
-#Tue Aug 09 09:09:15 ICT 2022
+#Wed Aug 10 22:37:23 ICT 2022
 base.0=D\:\\Documents\\Projects\\catet_kas\\build\\app\\intermediates\\dex\\debug\\mergeDexDebug\\classes.dex
 renamed.0=classes.dex
 path.0=classes.dex

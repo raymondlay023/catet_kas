@@ -38,7 +38,7 @@ class AddProductPage extends StatelessWidget {
             ),
           ),
         );
-        Navigator.popAndPushNamed(context, 'product-list');
+        Navigator.popAndPushNamed(context, '/product-list');
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(

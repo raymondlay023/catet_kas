@@ -1,4 +1,3 @@
-import 'package:catet_kas/providers/auth_provider.dart';
 import 'package:catet_kas/providers/shop_provider.dart';
 import 'package:catet_kas/providers/transaction_provider.dart';
 import 'package:catet_kas/theme.dart';
@@ -22,17 +21,13 @@ class _LoadingPageState extends State<LoadingPage> {
   }
 
   getInit() async {
-    AuthProvider authProvider =
-        Provider.of<AuthProvider>(context, listen: false);
-    await Provider.of<ProductProvider>(context, listen: false)
-        .getProducts(authProvider.user.token!);
-    await Provider.of<TransactionProvider>(context, listen: false)
-        .getTransactions(authProvider.user.token!);
-    await Provider.of<ShopProvider>(context, listen: false)
-        .getShop(authProvider.user.token!);
     final prefs = await SharedPreferences.getInstance();
-    prefs.setString('token', authProvider.user.token!);
-    print(prefs.getString('token'));
+    final token = prefs.getString('token');
+    await Provider.of<ProductProvider>(context, listen: false)
+        .getProducts(token!);
+    await Provider.of<TransactionProvider>(context, listen: false)
+        .getTransactions(token);
+    await Provider.of<ShopProvider>(context, listen: false).getShop(token);
     Navigator.pushReplacementNamed(context, '/home');
   }
 

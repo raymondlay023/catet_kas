@@ -43,12 +43,14 @@ class ShopProvider with ChangeNotifier {
   }
 
   Future<bool> create({
+    required String token,
     required String name,
     required String category,
     required String phoneNumber,
   }) async {
     try {
       ShopModel shop = await ShopService().create(
+        token: token,
         name: name,
         category: category,
         phoneNumber: phoneNumber,

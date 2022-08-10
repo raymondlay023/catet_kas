@@ -44,12 +44,10 @@ class _CatetPageState extends State<CatetPage> {
 
     Widget emptyState() {
       return Container(
-        margin: EdgeInsets.symmetric(
-          horizontal: defaultMargin,
-        ),
+        margin: EdgeInsets.only(top: defaultMargin * 2),
         child: Center(
           child: Text(
-            'Belum ada transaksi yang dicatat :(',
+            'Belum ada transaksi \nyang dicatat :(',
             style: primaryTextStyle.copyWith(
               fontSize: 22,
               color: Colors.black.withOpacity(0.2),
@@ -330,7 +328,9 @@ class _CatetPageState extends State<CatetPage> {
           summaryCard(),
           laporanKeuanganButton(),
           // cari(),
-          transactions(),
+          transactionProvider.transactions.isNotEmpty
+              ? transactions()
+              : emptyState(),
         ],
       );
     }

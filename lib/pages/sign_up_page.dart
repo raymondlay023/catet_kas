@@ -33,7 +33,7 @@ class _SignUpPageState extends State<SignUpPage> {
         email: emailController.text,
         password: passwordController.text,
       )) {
-        Navigator.pushNamed(context, '/loading');
+        Navigator.pushReplacementNamed(context, '/add-shop');
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(

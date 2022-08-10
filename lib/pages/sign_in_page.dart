@@ -65,7 +65,7 @@ class _SignInPageState extends State<SignInPage> {
               ),
               child: TextFormField(
                 validator: (value) {
-                  if (value == null) {
+                  if (value == '') {
                     return 'Tolong isi passwordnya!';
                   } else {
                     return null;
@@ -113,7 +113,7 @@ class _SignInPageState extends State<SignInPage> {
               ),
               child: TextFormField(
                 validator: (value) {
-                  if (value == null) {
+                  if (value == '') {
                     return 'Tolong isi emailnya!';
                   } else {
                     return null;

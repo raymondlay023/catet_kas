@@ -31,6 +31,7 @@ class ShopService {
   }
 
   Future<ShopModel> create({
+    required String token,
     required String name,
     required String category,
     required String phoneNumber,
@@ -39,11 +40,12 @@ class ShopService {
     var headers = {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
+      'Authorization': token,
     };
     var body = jsonEncode({
       'name': name,
       'category': category,
-      'phoneNumber': phoneNumber,
+      'phone_number': phoneNumber,
     });
 
     var response = await http.post(
@@ -59,15 +61,15 @@ class ShopService {
       ShopModel shop = ShopModel.fromJson(data);
       return shop;
     } else {
-      throw Exception('Gagal ');
+      throw Exception('Gagal buat tambah usaha!');
     }
   }
 
   Future<ShopModel> update({
     required String token,
-    String? name,
-    String? category,
-    String? phoneNumber,
+    required String name,
+    required String category,
+    required String phoneNumber,
   }) async {
     var url = Uri.parse('$baseUrl/update');
     var headers = {
