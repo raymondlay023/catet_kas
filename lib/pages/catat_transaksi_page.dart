@@ -16,26 +16,25 @@ class CatatTransaksiPage extends StatefulWidget {
 late String type = '';
 
 class _CatatTransaksiState extends State<CatatTransaksiPage> {
-  late double totalPrice;
+  final totalPriceController = TextEditingController();
   @override
   void initState() {
     super.initState();
-    totalPrice = getTotalPrice();
+    totalPriceController.addListener(getTotalPrice);
   }
 
   getTotalPrice() {
-    CartProvider cartProvider =
-        Provider.of<CartProvider>(context, listen: false);
-    return cartProvider.totalPrice();
+    setState(() {
+      CartProvider cartProvider =
+          Provider.of<CartProvider>(context, listen: false);
+      totalPriceController.text = cartProvider.totalPrice().toString();
+    });
   }
 
   TextEditingController noteController = TextEditingController(text: '');
 
   @override
   Widget build(BuildContext context) {
-    TextEditingController totalPemasukanController =
-        TextEditingController(text: totalPrice.toString());
-
     CartProvider cartProvider = Provider.of<CartProvider>(context);
     TransactionProvider transactionProvider =
         Provider.of<TransactionProvider>(context);
@@ -48,7 +47,7 @@ class _CatatTransaksiState extends State<CatatTransaksiPage> {
       if (await transactionProvider.create(
         token: token!,
         note: noteController.text,
-        total: double.parse(totalPemasukanController.text),
+        total: double.parse(totalPriceController.text),
         type: type,
         items: carts,
       )) {
@@ -196,12 +195,7 @@ class _CatatTransaksiState extends State<CatatTransaksiPage> {
                   FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
                   FilteringTextInputFormatter.singleLineFormatter,
                 ],
-                controller: totalPemasukanController,
-                // onChanged: (String value) {
-                //   setState(() {
-                //     totalPrice = double.parse(value);
-                //   });
-                // },
+                controller: totalPriceController,
                 cursorColor: primaryColor,
                 decoration: InputDecoration(
                   focusedBorder: UnderlineInputBorder(
@@ -233,12 +227,12 @@ class _CatatTransaksiState extends State<CatatTransaksiPage> {
                   label: const Text('Catatan Transaksi'),
                   floatingLabelStyle:
                       primaryTextStyle.copyWith(color: primaryTextColor),
-                  enabledBorder: UnderlineInputBorder(
+                  enabledBorder: OutlineInputBorder(
                     borderSide: BorderSide(
                       color: primaryTextColor,
                     ),
                   ),
-                  focusedBorder: UnderlineInputBorder(
+                  focusedBorder: OutlineInputBorder(
                     borderSide: BorderSide(
                       color: primaryColor,
                     ),

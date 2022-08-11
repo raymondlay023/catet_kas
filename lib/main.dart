@@ -15,6 +15,7 @@ import 'package:catet_kas/providers/cart_provider.dart';
 import 'package:catet_kas/providers/product_provider.dart';
 import 'package:catet_kas/providers/shop_provider.dart';
 import 'package:catet_kas/providers/transaction_provider.dart';
+import 'package:catet_kas/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:month_year_picker/month_year_picker.dart';
 import 'package:provider/provider.dart';
@@ -46,6 +47,10 @@ class MyApp extends StatelessWidget {
         )
       ],
       child: MaterialApp(
+        theme: ThemeData(
+          colorScheme: ColorScheme.fromSwatch()
+              .copyWith(primary: primaryColor, secondary: primaryColor),
+        ),
         localizationsDelegates: const [
           GlobalWidgetsLocalizations.delegate,
           GlobalMaterialLocalizations.delegate,

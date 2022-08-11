@@ -18,13 +18,13 @@ class EditTransaksiPage extends StatefulWidget {
 }
 
 class _EditTransaksiState extends State<EditTransaksiPage> {
-  late double totalPrice;
   late String type = '';
+  final totalPriceController = TextEditingController();
   @override
   void initState() {
     super.initState();
     getCarts();
-    totalPrice = getTotalPrice();
+    totalPriceController.addListener(getTotalPrice);
     type = getType();
   }
 
@@ -45,9 +45,11 @@ class _EditTransaksiState extends State<EditTransaksiPage> {
   }
 
   getTotalPrice() {
-    CartProvider cartProvider =
-        Provider.of<CartProvider>(context, listen: false);
-    return cartProvider.totalPrice();
+    setState(() {
+      CartProvider cartProvider =
+          Provider.of<CartProvider>(context, listen: false);
+      totalPriceController.text = cartProvider.totalPrice().toString();
+    });
   }
 
   getType() {
@@ -58,8 +60,6 @@ class _EditTransaksiState extends State<EditTransaksiPage> {
   Widget build(BuildContext context) {
     TextEditingController noteController =
         TextEditingController(text: widget.transaction.note);
-    TextEditingController totalPriceController =
-        TextEditingController(text: totalPrice.toString());
 
     CartProvider cartProvider = Provider.of<CartProvider>(context);
     TransactionProvider transactionProvider =
@@ -224,11 +224,7 @@ class _EditTransaksiState extends State<EditTransaksiPage> {
                   FilteringTextInputFormatter.singleLineFormatter,
                 ],
                 controller: totalPriceController,
-                // onChanged: (String value) {
-                //   setState(() {
-                //     totalPrice = double.parse(value);
-                //   });
-                // },
+                autofocus: true,
                 cursorColor: primaryColor,
                 decoration: InputDecoration(
                   focusedBorder: UnderlineInputBorder(
@@ -260,12 +256,12 @@ class _EditTransaksiState extends State<EditTransaksiPage> {
                   label: const Text('Catatan Transaksi'),
                   floatingLabelStyle:
                       primaryTextStyle.copyWith(color: primaryTextColor),
-                  enabledBorder: UnderlineInputBorder(
+                  enabledBorder: OutlineInputBorder(
                     borderSide: BorderSide(
                       color: primaryTextColor,
                     ),
                   ),
-                  focusedBorder: UnderlineInputBorder(
+                  focusedBorder: OutlineInputBorder(
                     borderSide: BorderSide(
                       color: primaryColor,
                     ),
