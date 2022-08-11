@@ -1,3 +1,4 @@
+import 'package:catet_kas/providers/auth_provider.dart';
 import 'package:catet_kas/providers/shop_provider.dart';
 import 'package:catet_kas/providers/transaction_provider.dart';
 import 'package:catet_kas/theme.dart';
@@ -21,10 +22,13 @@ class _LoadingPageState extends State<LoadingPage> {
   }
 
   getInit() async {
+    AuthProvider authProvider =
+        Provider.of<AuthProvider>(context, listen: false);
     final prefs = await SharedPreferences.getInstance();
-    final token = prefs.getString('token');
+    final token = authProvider.user.token!;
+    prefs.setString('token', authProvider.user.token!);
     await Provider.of<ProductProvider>(context, listen: false)
-        .getProducts(token!);
+        .getProducts(token);
     await Provider.of<TransactionProvider>(context, listen: false)
         .getTransactions(token);
     await Provider.of<ShopProvider>(context, listen: false).getShop(token);

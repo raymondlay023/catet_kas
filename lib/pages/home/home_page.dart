@@ -46,6 +46,12 @@ class _HomePageState extends State<HomePage> {
           name: element.product!.name!, quantity: element.quantity!));
     });
 
+    _formatCurrency(double value) {
+      return NumberFormat.currency(
+              locale: 'id', decimalDigits: 0, symbol: 'Rp ')
+          .format(value);
+    }
+
     UserModel user = authProvider.user;
     ShopModel shop = shopProvider.shop;
 
@@ -193,7 +199,8 @@ class _HomePageState extends State<HomePage> {
                 ),
                 const SizedBox(height: 7),
                 Text(
-                  'Rp. ${transactionProvider.totalTransaksi(type: 'PEMASUKAN', date: selectedMonthYear)}',
+                  _formatCurrency(transactionProvider.totalTransaksi(
+                      type: 'PEMASUKAN', date: selectedMonthYear)),
                   style: primaryTextStyle.copyWith(
                     color: pemasukanColor,
                     fontSize: 14,
@@ -219,7 +226,8 @@ class _HomePageState extends State<HomePage> {
                 ),
                 const SizedBox(height: 7),
                 Text(
-                  'Rp. ${transactionProvider.totalTransaksi(type: 'PENGELUARAN', date: selectedMonthYear)}',
+                  _formatCurrency(transactionProvider.totalTransaksi(
+                      type: 'PENGELUARAN', date: selectedMonthYear)),
                   style: primaryTextStyle.copyWith(
                     color: pengeluaranColor,
                     fontSize: 14,

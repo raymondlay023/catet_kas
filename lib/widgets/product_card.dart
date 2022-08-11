@@ -2,6 +2,7 @@ import 'package:catet_kas/models/product_model.dart';
 import 'package:catet_kas/providers/cart_provider.dart';
 import 'package:catet_kas/theme.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class ProductCard extends StatefulWidget {
@@ -31,9 +32,10 @@ class _ProductCardState extends State<ProductCard> {
   Widget build(BuildContext context) {
     CartProvider cartProvider = Provider.of<CartProvider>(context);
 
-    _formatDecimal(double value) {
-      if (value % 1 == 0) return value.toStringAsFixed(0).toString();
-      return value.toString();
+    _formatCurrency(double value) {
+      return NumberFormat.currency(
+              locale: 'id', decimalDigits: 0, symbol: 'Rp ')
+          .format(value);
     }
 
     return GestureDetector(
@@ -74,7 +76,7 @@ class _ProductCardState extends State<ProductCard> {
                   ),
                   const SizedBox(height: 10),
                   Text(
-                    'Rp. ${_formatDecimal(widget.product.price!)}',
+                    _formatCurrency(widget.product.price!),
                     style: secondaryTextStyle.copyWith(
                       fontSize: 12,
                       color: Colors.black.withOpacity(0.5),

@@ -28,9 +28,10 @@ class _LaporanKeuanganPageState extends State<LaporanKeuanganPage> {
     double gainLossTotal =
         transactionProvider.gainLoss(transactions: filteredTransactions);
 
-    _formatDecimal(double value) {
-      if (value % 1 == 0) return value.toStringAsFixed(0).toString();
-      return value.toString();
+    _formatCurrency(double value) {
+      return NumberFormat.currency(
+              locale: 'id', decimalDigits: 0, symbol: 'Rp ')
+          .format(value);
     }
 
     Future pickDateRange() async {
@@ -143,7 +144,7 @@ class _LaporanKeuanganPageState extends State<LaporanKeuanganPage> {
                   children: filteredTransactions.map((transaction) {
                     if (transaction.type == 'PEMASUKAN') {
                       return box(
-                          text: transaction.total.toString(),
+                          text: _formatCurrency(transaction.total!),
                           color: pemasukanColor.withOpacity(0.25));
                     } else {
                       return box(color: pemasukanColor.withOpacity(0.25));
@@ -157,7 +158,7 @@ class _LaporanKeuanganPageState extends State<LaporanKeuanganPage> {
                   children: filteredTransactions.map((transaction) {
                     if (transaction.type == 'PENGELUARAN') {
                       return box(
-                          text: transaction.total.toString(),
+                          text: _formatCurrency(transaction.total!),
                           color: pengeluaranColor.withOpacity(0.25));
                     } else {
                       return box(color: pengeluaranColor.withOpacity(0.25));
@@ -201,7 +202,9 @@ class _LaporanKeuanganPageState extends State<LaporanKeuanganPage> {
                     ),
                     const SizedBox(height: 7),
                     Text(
-                      'Rp. ${_formatDecimal(transactionProvider.totalTransaksi(type: 'PEMASUKAN', transactions: filteredTransactions))}',
+                      _formatCurrency(transactionProvider.totalTransaksi(
+                          type: 'PEMASUKAN',
+                          transactions: filteredTransactions)),
                       style: primaryTextStyle.copyWith(
                         color: pemasukanColor,
                         fontSize: 14,
@@ -227,7 +230,9 @@ class _LaporanKeuanganPageState extends State<LaporanKeuanganPage> {
                     ),
                     const SizedBox(height: 7),
                     Text(
-                      'Rp. ${_formatDecimal(transactionProvider.totalTransaksi(type: 'PENGELUARAN', transactions: filteredTransactions))}',
+                      _formatCurrency(transactionProvider.totalTransaksi(
+                          type: 'PENGELUARAN',
+                          transactions: filteredTransactions)),
                       style: primaryTextStyle.copyWith(
                         color: pengeluaranColor,
                         fontSize: 14,
@@ -263,7 +268,7 @@ class _LaporanKeuanganPageState extends State<LaporanKeuanganPage> {
                     ),
                   ),
                   Text(
-                    'Rp. ${_formatDecimal(gainLossTotal.abs())}',
+                    _formatCurrency(gainLossTotal.abs()),
                     style: primaryTextStyle.copyWith(
                       fontSize: 16,
                       fontWeight: bold,

@@ -24,7 +24,6 @@ class _AddShopPageState extends State<AddShopPage> {
         Provider.of<AuthProvider>(context, listen: false);
     final prefs = await SharedPreferences.getInstance();
     prefs.setString('token', authProvider.user.token!);
-    print(prefs.getString('token'));
   }
 
   TextEditingController nameController = TextEditingController(text: '');

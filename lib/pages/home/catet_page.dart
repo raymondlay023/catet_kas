@@ -37,9 +37,10 @@ class _CatetPageState extends State<CatetPage> {
 
     double gainLossTotal = transactionProvider.gainLoss();
 
-    _formatDecimal(double value) {
-      if (value % 1 == 0) return value.toStringAsFixed(0).toString();
-      return value.toString();
+    _formatCurrency(double value) {
+      return NumberFormat.currency(
+              locale: 'id', decimalDigits: 0, symbol: 'Rp ')
+          .format(value);
     }
 
     Widget emptyState() {
@@ -88,7 +89,8 @@ class _CatetPageState extends State<CatetPage> {
                     ),
                     const SizedBox(height: 7),
                     Text(
-                      'Rp. ${_formatDecimal(transactionProvider.totalTransaksi(type: 'PEMASUKAN'))}',
+                      _formatCurrency(transactionProvider.totalTransaksi(
+                          type: 'PEMASUKAN')),
                       style: primaryTextStyle.copyWith(
                         color: pemasukanColor,
                         fontSize: 14,
@@ -114,7 +116,8 @@ class _CatetPageState extends State<CatetPage> {
                     ),
                     const SizedBox(height: 7),
                     Text(
-                      'Rp. ${_formatDecimal(transactionProvider.totalTransaksi(type: 'PENGELUARAN'))}',
+                      _formatCurrency(transactionProvider.totalTransaksi(
+                          type: 'PENGELUARAN')),
                       style: primaryTextStyle.copyWith(
                         color: pengeluaranColor,
                         fontSize: 14,
@@ -150,7 +153,7 @@ class _CatetPageState extends State<CatetPage> {
                     ),
                   ),
                   Text(
-                    'Rp. ${_formatDecimal(gainLossTotal.abs())}',
+                    _formatCurrency(gainLossTotal.abs()),
                     style: primaryTextStyle.copyWith(
                       fontSize: 16,
                       fontWeight: bold,
@@ -275,7 +278,9 @@ class _CatetPageState extends State<CatetPage> {
                         alignment: Alignment.center,
                         width: 115,
                         child: Text(
-                          'Rp. ${_formatDecimal(transactionProvider.gainLoss(date: value.createdAt).abs())}',
+                          _formatCurrency(transactionProvider
+                              .gainLoss(date: value.createdAt)
+                              .abs()),
                           style: primaryTextStyle.copyWith(
                             fontSize: 14,
                             fontWeight: semiBold,

@@ -2,15 +2,17 @@ import 'package:catet_kas/models/transaction_model.dart';
 import 'package:catet_kas/pages/detail_transaksi_page.dart';
 import 'package:catet_kas/theme.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class TransactionCard extends StatelessWidget {
   final TransactionModel transaction;
   const TransactionCard(this.transaction);
   @override
   Widget build(BuildContext context) {
-    _formatDecimal(double value) {
-      if (value % 1 == 0) return value.toStringAsFixed(0).toString();
-      return value.toString();
+    _formatCurrency(double value) {
+      return NumberFormat.currency(
+              locale: 'id', decimalDigits: 0, symbol: 'Rp ')
+          .format(value);
     }
 
     return GestureDetector(
@@ -47,7 +49,7 @@ class TransactionCard extends StatelessWidget {
               child: Container(
                 alignment: Alignment.center,
                 child: Text(
-                  'Rp. ${_formatDecimal(transaction.total!)}',
+                  _formatCurrency(transaction.total!),
                   textAlign: TextAlign.center,
                   style: primaryTextStyle.copyWith(
                     fontSize: 12,

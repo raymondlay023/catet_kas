@@ -1,6 +1,5 @@
 import 'package:catet_kas/models/transaction_model.dart';
 import 'package:catet_kas/pages/edit_transaksi_page.dart';
-import 'package:catet_kas/providers/cart_provider.dart';
 import 'package:catet_kas/providers/shop_provider.dart';
 import 'package:catet_kas/providers/transaction_provider.dart';
 import 'package:catet_kas/theme.dart';
@@ -20,9 +19,10 @@ class DetailTransaksiPage extends StatelessWidget {
     TransactionProvider transactionProvider =
         Provider.of<TransactionProvider>(context);
 
-    _formatDecimal(double value) {
-      if (value % 1 == 0) return value.toStringAsFixed(0).toString();
-      return value.toString();
+    _formatCurrency(var value) {
+      return NumberFormat.currency(
+              locale: 'id', decimalDigits: 0, symbol: 'Rp ')
+          .format(value);
     }
 
     Widget content() {
@@ -109,8 +109,12 @@ class DetailTransaksiPage extends StatelessWidget {
                       .map((item) => Column(
                             children: [
                               Text('${item['product']['name']}'),
-                              Text('Rp. ${item['product']['price']} / item',
-                                  style: TextStyle(color: Colors.black38)),
+                              Text(
+                                '${_formatCurrency(item['product']['price'])} / item',
+                                style: TextStyle(
+                                  color: Colors.black38,
+                                ),
+                              ),
                               SizedBox(height: 10),
                             ],
                           ))
@@ -168,7 +172,7 @@ class DetailTransaksiPage extends StatelessWidget {
               Expanded(
                 flex: 1,
                 child: Text(
-                  'Rp. ${_formatDecimal(transaction.total!)}',
+                  _formatCurrency(transaction.total!),
                   style: TextStyle(fontSize: 15),
                   textAlign: TextAlign.center,
                 ),
