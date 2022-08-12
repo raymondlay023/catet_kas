@@ -202,7 +202,7 @@ class _LaporanKeuanganPageState extends State<LaporanKeuanganPage> {
                     ),
                     const SizedBox(height: 7),
                     Text(
-                      _formatCurrency(transactionProvider.totalTransaksi(
+                      _formatCurrency(transactionProvider.total(
                           type: 'PEMASUKAN',
                           transactions: filteredTransactions)),
                       style: primaryTextStyle.copyWith(
@@ -230,7 +230,7 @@ class _LaporanKeuanganPageState extends State<LaporanKeuanganPage> {
                     ),
                     const SizedBox(height: 7),
                     Text(
-                      _formatCurrency(transactionProvider.totalTransaksi(
+                      _formatCurrency(transactionProvider.total(
                           type: 'PENGELUARAN',
                           transactions: filteredTransactions)),
                       style: primaryTextStyle.copyWith(

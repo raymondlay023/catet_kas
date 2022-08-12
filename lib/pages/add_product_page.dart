@@ -5,8 +5,6 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AddProductPage extends StatelessWidget {
-  // const AddProductPage({Key? key}) : super(key: key);
-
   TextEditingController namaBarangController = TextEditingController(text: '');
   TextEditingController hargaJualController = TextEditingController(text: '');
   TextEditingController modalController = TextEditingController(text: '');
@@ -19,7 +17,7 @@ class AddProductPage extends StatelessWidget {
     handleAddProduct() async {
       final prefs = await SharedPreferences.getInstance();
       final token = prefs.getString('token');
-      if (await productProvider.createProduct(
+      if (await productProvider.create(
         token: token!,
         name: namaBarangController.text,
         price: double.parse(hargaJualController.text),

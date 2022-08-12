@@ -89,8 +89,8 @@ class _CatetPageState extends State<CatetPage> {
                     ),
                     const SizedBox(height: 7),
                     Text(
-                      _formatCurrency(transactionProvider.totalTransaksi(
-                          type: 'PEMASUKAN')),
+                      _formatCurrency(
+                          transactionProvider.total(type: 'PEMASUKAN')),
                       style: primaryTextStyle.copyWith(
                         color: pemasukanColor,
                         fontSize: 14,
@@ -116,8 +116,8 @@ class _CatetPageState extends State<CatetPage> {
                     ),
                     const SizedBox(height: 7),
                     Text(
-                      _formatCurrency(transactionProvider.totalTransaksi(
-                          type: 'PENGELUARAN')),
+                      _formatCurrency(
+                          transactionProvider.total(type: 'PENGELUARAN')),
                       style: primaryTextStyle.copyWith(
                         color: pengeluaranColor,
                         fontSize: 14,
@@ -385,7 +385,7 @@ class _CatetPageState extends State<CatetPage> {
 
     Widget customFloatingActionButton() {
       return FloatingActionButton(
-        onPressed: () => Navigator.pushNamed(context, '/catat-transaksi'),
+        onPressed: () => Navigator.pushNamed(context, '/add-transaction'),
         child: Icon(Icons.create_outlined),
         backgroundColor: buttonColor,
       );

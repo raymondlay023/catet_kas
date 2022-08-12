@@ -22,13 +22,13 @@ class ProductProvider with ChangeNotifier {
     }
   }
 
-  Future<bool> updateProduct({
+  Future<bool> update({
     required int id,
     required String token,
-    String? name,
-    double? stock,
-    double? price,
-    double? capital,
+    required String name,
+    required double stock,
+    required double price,
+    required double capital,
   }) async {
     try {
       await ProductService().update(
@@ -46,7 +46,7 @@ class ProductProvider with ChangeNotifier {
     }
   }
 
-  Future<bool> createProduct({
+  Future<bool> create({
     required String token,
     required String name,
     required double price,
@@ -68,7 +68,7 @@ class ProductProvider with ChangeNotifier {
     }
   }
 
-  Future<bool> deleteProduct({
+  Future<bool> delete({
     required String token,
     required int id,
   }) async {

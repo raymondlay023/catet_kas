@@ -39,7 +39,7 @@ class _ProductListState extends State<ProductListPage> {
       final prefs = await SharedPreferences.getInstance();
       final token = prefs.getString('token');
 
-      if (await productProvider.deleteProduct(
+      if (await productProvider.delete(
         token: token!,
         id: product.id!,
       )) {
@@ -47,7 +47,7 @@ class _ProductListState extends State<ProductListPage> {
           SnackBar(
             backgroundColor: Colors.blue,
             content: Text(
-              'Produk berhasil diupdate!',
+              'Produk berhasil dihapus!',
               textAlign: TextAlign.center,
               style: secondaryTextStyle.copyWith(
                 color: backgroundColor1,
@@ -61,7 +61,7 @@ class _ProductListState extends State<ProductListPage> {
           SnackBar(
             backgroundColor: alertColor,
             content: Text(
-              'Produk gagal diupdate!',
+              'Produk gagal dihapus!',
               textAlign: TextAlign.center,
               style: secondaryTextStyle.copyWith(
                 color: backgroundColor1,

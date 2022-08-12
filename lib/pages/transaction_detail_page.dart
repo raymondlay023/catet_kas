@@ -1,5 +1,6 @@
 import 'package:catet_kas/models/transaction_model.dart';
-import 'package:catet_kas/pages/edit_transaksi_page.dart';
+import 'package:catet_kas/pages/edit_transaction_page.dart';
+import 'package:catet_kas/pages/home/main_page.dart';
 import 'package:catet_kas/providers/shop_provider.dart';
 import 'package:catet_kas/providers/transaction_provider.dart';
 import 'package:catet_kas/theme.dart';
@@ -9,10 +10,9 @@ import 'package:provider/provider.dart';
 import 'package:dotted_line/dotted_line.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class DetailTransaksiPage extends StatelessWidget {
-  // const DetailTransaksiPage({Key? key}) : super(key: key);
+class TransactionDetailPage extends StatelessWidget {
   final TransactionModel transaction;
-  const DetailTransaksiPage({required this.transaction});
+  TransactionDetailPage({required this.transaction});
   @override
   Widget build(BuildContext context) {
     ShopProvider shopProvider = Provider.of<ShopProvider>(context);
@@ -227,7 +227,15 @@ class DetailTransaksiPage extends StatelessWidget {
             textAlign: TextAlign.center,
           ),
         ));
-        Navigator.pop(context);
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(
+            builder: (context) => MainPage(
+              selectedIndex: 1,
+            ),
+          ),
+          (route) => false,
+        );
       } else {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           backgroundColor: alertColor,
@@ -260,7 +268,7 @@ class DetailTransaksiPage extends StatelessWidget {
             onPressed: () => Navigator.push(
               context,
               MaterialPageRoute(
-                builder: ((context) => EditTransaksiPage(
+                builder: ((context) => EditTransactionPage(
                       transaction: transaction,
                     )),
               ),

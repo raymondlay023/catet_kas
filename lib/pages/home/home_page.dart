@@ -199,7 +199,7 @@ class _HomePageState extends State<HomePage> {
                 ),
                 const SizedBox(height: 7),
                 Text(
-                  _formatCurrency(transactionProvider.totalTransaksi(
+                  _formatCurrency(transactionProvider.total(
                       type: 'PEMASUKAN', date: selectedMonthYear)),
                   style: primaryTextStyle.copyWith(
                     color: pemasukanColor,
@@ -226,7 +226,7 @@ class _HomePageState extends State<HomePage> {
                 ),
                 const SizedBox(height: 7),
                 Text(
-                  _formatCurrency(transactionProvider.totalTransaksi(
+                  _formatCurrency(transactionProvider.total(
                       type: 'PENGELUARAN', date: selectedMonthYear)),
                   style: primaryTextStyle.copyWith(
                     color: pengeluaranColor,

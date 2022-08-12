@@ -37,10 +37,10 @@ class ProductService {
   Future<ProductModel> update({
     required String token,
     required int id,
-    String? name,
-    double? price,
-    double? capital,
-    double? stock,
+    required String name,
+    required double price,
+    required double capital,
+    required double stock,
   }) async {
     var url = Uri.parse('$baseUrl/update?id=$id');
     var headers = {

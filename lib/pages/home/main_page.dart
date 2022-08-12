@@ -5,14 +5,14 @@ import 'package:catet_kas/theme.dart';
 import 'package:flutter/material.dart';
 
 class MainPage extends StatefulWidget {
-  const MainPage({Key? key}) : super(key: key);
-
+  late int selectedIndex;
+  MainPage({this.selectedIndex = 0});
   @override
   State<MainPage> createState() => _MainPageState();
 }
 
 class _MainPageState extends State<MainPage> {
-  int _selectedDateIndex = 0;
+  // int _selectedIndex = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -22,10 +22,10 @@ class _MainPageState extends State<MainPage> {
         backgroundColor: Colors.white,
         elevation: 0,
         type: BottomNavigationBarType.fixed,
-        currentIndex: _selectedDateIndex,
+        currentIndex: widget.selectedIndex,
         onTap: (index) {
           setState(() {
-            _selectedDateIndex = index;
+            widget.selectedIndex = index;
           });
         },
         items: [
@@ -38,7 +38,7 @@ class _MainPageState extends State<MainPage> {
                 'assets/icon_home.png',
                 width: 20,
                 color:
-                    _selectedDateIndex == 0 ? primaryColor : primaryTextColor,
+                    widget.selectedIndex == 0 ? primaryColor : primaryTextColor,
               ),
             ),
             label: 'Beranda',
@@ -52,7 +52,7 @@ class _MainPageState extends State<MainPage> {
                 'assets/icon_catet.png',
                 width: 20,
                 color:
-                    _selectedDateIndex == 1 ? primaryColor : primaryTextColor,
+                    widget.selectedIndex == 1 ? primaryColor : primaryTextColor,
               ),
             ),
             label: 'Catet',
@@ -66,7 +66,7 @@ class _MainPageState extends State<MainPage> {
                 'assets/icon_profile.png',
                 width: 20,
                 color:
-                    _selectedDateIndex == 2 ? primaryColor : primaryTextColor,
+                    widget.selectedIndex == 2 ? primaryColor : primaryTextColor,
               ),
             ),
             label: 'Profil',
@@ -76,7 +76,7 @@ class _MainPageState extends State<MainPage> {
     }
 
     Widget body() {
-      switch (_selectedDateIndex) {
+      switch (widget.selectedIndex) {
         case 0:
           return HomePage();
         case 1:

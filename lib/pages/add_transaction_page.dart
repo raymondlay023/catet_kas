@@ -1,6 +1,5 @@
 import 'package:catet_kas/models/cart_model.dart';
-import 'package:catet_kas/models/transaction_item_model.dart';
-import 'package:catet_kas/models/transaction_model.dart';
+import 'package:catet_kas/pages/home/main_page.dart';
 import 'package:catet_kas/providers/cart_provider.dart';
 import 'package:catet_kas/providers/transaction_provider.dart';
 import 'package:catet_kas/theme.dart';
@@ -10,38 +9,19 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class EditTransaksiPage extends StatefulWidget {
-  final TransactionModel transaction;
-  const EditTransaksiPage({required this.transaction});
+class AddTransactionPage extends StatefulWidget {
   @override
-  State<EditTransaksiPage> createState() => _EditTransaksiState();
+  State<AddTransactionPage> createState() => _CatatTransaksiState();
 }
 
-class _EditTransaksiState extends State<EditTransaksiPage> {
-  late String type = '';
+late String type = '';
+
+class _CatatTransaksiState extends State<AddTransactionPage> {
   final totalPriceController = TextEditingController();
   @override
   void initState() {
     super.initState();
-    getCarts();
     totalPriceController.addListener(getTotalPrice);
-    type = getType();
-  }
-
-  getCarts() {
-    CartProvider cartProvider = Provider.of(context, listen: false);
-    List<TransactionItemModel> allItems = [];
-    var items = widget.transaction.items!.map(
-      (item) => item,
-    );
-    allItems.addAll(items.map((item) => TransactionItemModel.fromJson(item)));
-
-    allItems.forEach((element) {
-      cartProvider.carts.add(CartModel(
-          id: element.id!,
-          product: element.product!,
-          quantity: element.quantity!));
-    });
   }
 
   getTotalPrice() {
@@ -52,27 +32,20 @@ class _EditTransaksiState extends State<EditTransaksiPage> {
     });
   }
 
-  getType() {
-    return widget.transaction.type!;
-  }
+  TextEditingController noteController = TextEditingController(text: '');
 
   @override
   Widget build(BuildContext context) {
-    TextEditingController noteController =
-        TextEditingController(text: widget.transaction.note);
-
     CartProvider cartProvider = Provider.of<CartProvider>(context);
     TransactionProvider transactionProvider =
         Provider.of<TransactionProvider>(context);
-
     List<CartModel> carts = cartProvider.carts;
 
-    handleEditTransaction() async {
+    handleAddTransaction() async {
       final prefs = await SharedPreferences.getInstance();
-      final token = prefs.getString('token');
 
-      if (await transactionProvider.update(
-        id: widget.transaction.id!,
+      final token = prefs.getString('token');
+      if (await transactionProvider.create(
         token: token!,
         note: noteController.text,
         total: double.parse(totalPriceController.text),
@@ -93,7 +66,14 @@ class _EditTransaksiState extends State<EditTransaksiPage> {
           getTotalPrice();
           carts.clear();
         });
-        Navigator.pushReplacementNamed(context, '/home');
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => MainPage(
+              selectedIndex: 1,
+            ),
+          ),
+        );
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -224,7 +204,6 @@ class _EditTransaksiState extends State<EditTransaksiPage> {
                   FilteringTextInputFormatter.singleLineFormatter,
                 ],
                 controller: totalPriceController,
-                autofocus: true,
                 cursorColor: primaryColor,
                 decoration: InputDecoration(
                   focusedBorder: UnderlineInputBorder(
@@ -292,7 +271,7 @@ class _EditTransaksiState extends State<EditTransaksiPage> {
               color: primaryTextColor,
             ),
           ),
-          onPressed: handleEditTransaction,
+          onPressed: handleAddTransaction,
         ),
       );
     }
@@ -313,19 +292,10 @@ class _EditTransaksiState extends State<EditTransaksiPage> {
         toolbarHeight: 65,
         backgroundColor: primaryColor,
         title: Text(
-          'Edit Transaksi',
+          'Catat Transaksi',
           style: primaryTextStyle.copyWith(
             color: backgroundColor1,
           ),
-        ),
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          onPressed: () {
-            CartProvider cartProvider =
-                Provider.of<CartProvider>(context, listen: false);
-            cartProvider.carts.clear();
-            Navigator.pop(context);
-          },
         ),
       );
     }

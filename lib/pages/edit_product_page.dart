@@ -27,7 +27,7 @@ class EditProductPage extends StatelessWidget {
     handleUpdateProduct() async {
       final prefs = await SharedPreferences.getInstance();
       final token = prefs.getString('token');
-      if (await productProvider.updateProduct(
+      if (await productProvider.update(
         token: token!,
         id: product.id!,
         name: namaBarangController.text,
@@ -47,7 +47,7 @@ class EditProductPage extends StatelessWidget {
             ),
           ),
         );
-        Navigator.popUntil(context, ModalRoute.withName('/catat-transaksi'));
+        Navigator.popUntil(context, ModalRoute.withName('/add-transaction'));
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(

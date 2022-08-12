@@ -90,7 +90,7 @@ class TransactionProvider with ChangeNotifier {
     }
   }
 
-  double totalTransaksi(
+  double total(
       {String? type, DateTime? date, List<TransactionModel>? transactions}) {
     double total = 0;
     final __transactions = transactions ?? _transactions;

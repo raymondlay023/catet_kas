@@ -1,5 +1,5 @@
 import 'package:catet_kas/models/transaction_model.dart';
-import 'package:catet_kas/pages/detail_transaksi_page.dart';
+import 'package:catet_kas/pages/transaction_detail_page.dart';
 import 'package:catet_kas/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -19,7 +19,7 @@ class TransactionCard extends StatelessWidget {
       onTap: () => Navigator.push(
         context,
         MaterialPageRoute(
-          builder: ((context) => DetailTransaksiPage(
+          builder: ((context) => TransactionDetailPage(
                 transaction: transaction,
               )),
         ),
