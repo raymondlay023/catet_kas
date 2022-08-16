@@ -11,12 +11,12 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class AddTransactionPage extends StatefulWidget {
   @override
-  State<AddTransactionPage> createState() => _CatatTransaksiState();
+  State<AddTransactionPage> createState() => _AddTransaksiState();
 }
 
 late String type = '';
 
-class _CatatTransaksiState extends State<AddTransactionPage> {
+class _AddTransaksiState extends State<AddTransactionPage> {
   final totalPriceController = TextEditingController();
   @override
   void initState() {

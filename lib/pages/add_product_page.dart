@@ -22,7 +22,7 @@ class AddProductPage extends StatelessWidget {
         name: namaBarangController.text,
         price: double.parse(hargaJualController.text),
         capital: double.parse(modalController.text),
-        stock: double.parse(stokController.text),
+        stock: int.parse(stokController.text),
       )) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(

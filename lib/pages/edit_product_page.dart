@@ -15,13 +15,13 @@ class EditProductPage extends StatelessWidget {
     ProductProvider productProvider = Provider.of<ProductProvider>(context);
     // ProductModel product = productProvider.product;
 
-    TextEditingController namaBarangController =
+    TextEditingController nameController =
         TextEditingController(text: product.name);
-    TextEditingController hargaJualController =
+    TextEditingController priceController =
         TextEditingController(text: product.price.toString());
-    TextEditingController modalController =
+    TextEditingController capitalController =
         TextEditingController(text: product.capital.toString());
-    TextEditingController stokController =
+    TextEditingController stockController =
         TextEditingController(text: product.stock.toString());
 
     handleUpdateProduct() async {
@@ -30,10 +30,10 @@ class EditProductPage extends StatelessWidget {
       if (await productProvider.update(
         token: token!,
         id: product.id!,
-        name: namaBarangController.text,
-        price: double.parse(hargaJualController.text),
-        capital: double.parse(modalController.text),
-        stock: double.parse(stokController.text),
+        name: nameController.text,
+        price: double.parse(priceController.text),
+        capital: double.parse(capitalController.text),
+        stock: int.parse(stockController.text),
       )) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -75,7 +75,7 @@ class EditProductPage extends StatelessWidget {
               horizontal: 20,
             ),
             child: TextFormField(
-              controller: namaBarangController,
+              controller: nameController,
               cursorColor: primaryColor,
               decoration: InputDecoration(
                 floatingLabelStyle: secondaryTextStyle.copyWith(
@@ -110,7 +110,7 @@ class EditProductPage extends StatelessWidget {
               horizontal: 20,
             ),
             child: TextFormField(
-              controller: hargaJualController,
+              controller: priceController,
               cursorColor: primaryColor,
               decoration: InputDecoration(
                 floatingLabelStyle: secondaryTextStyle.copyWith(
@@ -145,7 +145,7 @@ class EditProductPage extends StatelessWidget {
               horizontal: 20,
             ),
             child: TextFormField(
-              controller: modalController,
+              controller: capitalController,
               cursorColor: primaryColor,
               decoration: InputDecoration(
                 floatingLabelStyle: secondaryTextStyle.copyWith(
@@ -180,7 +180,7 @@ class EditProductPage extends StatelessWidget {
               horizontal: 20,
             ),
             child: TextFormField(
-              controller: stokController,
+              controller: stockController,
               cursorColor: primaryColor,
               decoration: InputDecoration(
                 floatingLabelStyle: secondaryTextStyle.copyWith(

@@ -46,6 +46,10 @@ class _HomePageState extends State<HomePage> {
           name: element.product!.name!, quantity: element.quantity!));
     });
 
+    _chartDataExist(_ChartData chartData) {
+      return data.indexOf(chartData);
+    }
+
     _formatCurrency(double value) {
       return NumberFormat.currency(
               locale: 'id', decimalDigits: 0, symbol: 'Rp ')

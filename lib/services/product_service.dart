@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 
 class ProductService {
   String baseUrl = 'http://192.168.1.6:8000/api/products';
+  // String baseUrl = 'http://192.168.200.29:8000/api/products';
 
   Future<List<ProductModel>> getProducts(String token) async {
     var url = Uri.parse('$baseUrl/read');
@@ -40,7 +41,7 @@ class ProductService {
     required String name,
     required double price,
     required double capital,
-    required double stock,
+    required int stock,
   }) async {
     var url = Uri.parse('$baseUrl/update?id=$id');
     var headers = {
@@ -77,7 +78,7 @@ class ProductService {
     required String name,
     required double price,
     double capital = 0,
-    double stock = 0,
+    int stock = 0,
   }) async {
     var url = Uri.parse('$baseUrl/create');
     var headers = {

@@ -1,5 +1,9 @@
+import 'dart:async';
+
+import 'package:catet_kas/models/transaction_model.dart';
 import 'package:catet_kas/providers/transaction_provider.dart';
 import 'package:catet_kas/theme.dart';
+import 'package:catet_kas/widgets/search_field.dart';
 import 'package:catet_kas/widgets/transaction_card.dart';
 import 'package:flutter/material.dart';
 import 'package:grouped_list/grouped_list.dart';
@@ -15,6 +19,9 @@ class CatetPage extends StatefulWidget {
 
 class _CatetPageState extends State<CatetPage> {
   late Future<dynamic> dataFuture;
+  late List<TransactionModel> transactions;
+  Timer? debouncer;
+  String query = '';
   final cariController = TextEditingController(text: '');
   @override
   void initState() {
@@ -22,12 +29,33 @@ class _CatetPageState extends State<CatetPage> {
     dataFuture = getData();
   }
 
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
+  void debounce(
+    VoidCallback callback, {
+    Duration duration = const Duration(microseconds: 1000),
+  }) {
+    if (debouncer != null) {
+      debouncer!.cancel();
+    }
+    debouncer = Timer(duration, callback);
+  }
+
   Future<dynamic> getData() async {
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('token');
-    await Provider.of<TransactionProvider>(context, listen: false)
-        .getTransactions(token!);
-    return TransactionProvider().transactions;
+    TransactionProvider transactionProvider =
+        Provider.of<TransactionProvider>(context, listen: false);
+    await transactionProvider.getTransactions(token!);
+    if (mounted) {
+      setState(() {
+        transactions = transactionProvider.transactions;
+      });
+    }
+    return transactionProvider.transactions;
   }
 
   @override
@@ -89,8 +117,8 @@ class _CatetPageState extends State<CatetPage> {
                     ),
                     const SizedBox(height: 7),
                     Text(
-                      _formatCurrency(
-                          transactionProvider.total(type: 'PEMASUKAN')),
+                      _formatCurrency(transactionProvider.total(
+                          type: 'PEMASUKAN', transactions: transactions)),
                       style: primaryTextStyle.copyWith(
                         color: pemasukanColor,
                         fontSize: 14,
@@ -116,8 +144,8 @@ class _CatetPageState extends State<CatetPage> {
                     ),
                     const SizedBox(height: 7),
                     Text(
-                      _formatCurrency(
-                          transactionProvider.total(type: 'PENGELUARAN')),
+                      _formatCurrency(transactionProvider.total(
+                          type: 'PENGELUARAN', transactions: transactions)),
                       style: primaryTextStyle.copyWith(
                         color: pengeluaranColor,
                         fontSize: 14,
@@ -199,16 +227,6 @@ class _CatetPageState extends State<CatetPage> {
       );
     }
 
-    // void searchTransaction(String query) {
-    //   final suggestion = transactionProvider.transactions.where((transaction) {
-    //     final transactionNote = transaction.note!.toLowerCase();
-    //     final input = query.toLowerCase();
-
-    //     return transactionNote.contains(input);
-    //   }).toList();
-    //   setState(() {});
-    // }
-
     Widget cari() {
       return Row(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -234,10 +252,9 @@ class _CatetPageState extends State<CatetPage> {
       );
     }
 
-    Widget transactions() {
+    Widget transactionsList() {
       return Container(
         width: MediaQuery.of(context).size.width,
-        margin: const EdgeInsets.only(top: 10),
         padding: const EdgeInsets.all(15),
         decoration: BoxDecoration(borderRadius: BorderRadius.circular(15)),
         child: GroupedListView<dynamic, String>(
@@ -245,7 +262,7 @@ class _CatetPageState extends State<CatetPage> {
           separator: const Divider(height: 5),
           itemComparator: (item1, item2) => item1.note.compareTo(item2.note),
           groupComparator: (value1, value2) => value2.compareTo(value1),
-          elements: transactionProvider.transactions,
+          elements: transactions,
           groupBy: (element) => element.createdAt.toString(),
           //header list transaksi
           groupHeaderBuilder: (value) => Column(
@@ -326,6 +343,22 @@ class _CatetPageState extends State<CatetPage> {
       );
     }
 
+    searchTransaction(String query) async => debounce(() async {
+          final transactions =
+              await transactionProvider.filteredTransactions(query: query);
+          if (mounted) {
+            setState(() {
+              this.query = query;
+              this.transactions = transactions;
+            });
+          }
+        });
+
+    buildSearch() => SearchWidget(
+        text: query,
+        onChanged: searchTransaction,
+        hintText: 'Transaction note');
+
     Widget content() {
       return ListView(
         padding: EdgeInsets.symmetric(horizontal: defaultMargin),
@@ -333,9 +366,8 @@ class _CatetPageState extends State<CatetPage> {
           summaryCard(),
           laporanKeuanganButton(),
           // cari(),
-          transactionProvider.transactions.isNotEmpty
-              ? transactions()
-              : emptyState(),
+          buildSearch(),
+          transactions.isNotEmpty ? transactionsList() : emptyState(),
         ],
       );
     }

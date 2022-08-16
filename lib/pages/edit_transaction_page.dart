@@ -16,10 +16,10 @@ class EditTransactionPage extends StatefulWidget {
   final TransactionModel transaction;
   const EditTransactionPage({required this.transaction});
   @override
-  State<EditTransactionPage> createState() => _EditTransaksiState();
+  State<EditTransactionPage> createState() => _EditTransactionState();
 }
 
-class _EditTransaksiState extends State<EditTransactionPage> {
+class _EditTransactionState extends State<EditTransactionPage> {
   late String type = '';
   final totalPriceController = TextEditingController();
   @override

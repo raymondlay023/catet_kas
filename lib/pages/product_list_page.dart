@@ -1,8 +1,10 @@
+import 'dart:async';
 import 'package:catet_kas/models/product_model.dart';
 import 'package:catet_kas/pages/edit_product_page.dart';
 import 'package:catet_kas/providers/product_provider.dart';
 import 'package:catet_kas/theme.dart';
 import 'package:catet_kas/widgets/product_card.dart';
+import 'package:catet_kas/widgets/search_field.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -16,19 +18,42 @@ class ProductListPage extends StatefulWidget {
 
 class _ProductListState extends State<ProductListPage> {
   late Future<dynamic> dataFuture;
+  late List<ProductModel> products;
+  Timer? debouncer;
+  String query = '';
   @override
   void initState() {
     super.initState();
     dataFuture = getData();
   }
 
+  @override
+  void dispose() {
+    debouncer?.cancel();
+    super.dispose();
+  }
+
+  void debounce(
+    VoidCallback callback, {
+    Duration duration = const Duration(microseconds: 1000),
+  }) {
+    if (debouncer != null) {
+      debouncer!.cancel();
+    }
+    debouncer = Timer(duration, callback);
+  }
+
   Future<dynamic> getData() async {
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('token');
-    await Provider.of<ProductProvider>(context, listen: false)
-        .getProducts(token!);
-    var products = ProductProvider().products;
-    return products;
+    ProductProvider productProvider = Provider.of(context, listen: false);
+    await productProvider.getProducts(token!);
+    if (mounted) {
+      setState(() {
+        products = productProvider.products;
+      });
+    }
+    return productProvider.products;
   }
 
   @override
@@ -98,10 +123,10 @@ class _ProductListState extends State<ProductListPage> {
       );
     }
 
-    Widget products() {
+    Widget listProducts() {
       return SingleChildScrollView(
           child: ExpansionPanelList.radio(
-        children: productProvider.products
+        children: products
             .map((product) => ExpansionPanelRadio(
                   value: product.id!,
                   headerBuilder: (context, isExpanded) => ProductCard(product),
@@ -144,7 +169,7 @@ class _ProductListState extends State<ProductListPage> {
       ));
     }
 
-    Widget listProduct() {
+    Widget productFuture() {
       return FutureBuilder(
         future: dataFuture,
         builder: (context, snapshot) {
@@ -157,7 +182,7 @@ class _ProductListState extends State<ProductListPage> {
                 return const Center(child: Text('error :'));
               } else if (snapshot.hasData) {
                 return Expanded(
-                  child: products(),
+                  child: listProducts(),
                 );
               } else {
                 return const Center(child: CircularProgressIndicator());
@@ -208,26 +233,39 @@ class _ProductListState extends State<ProductListPage> {
       );
     }
 
+    searchProduct(String query) async => debounce(() async {
+          final products = await productProvider.filteredProduct(query: query);
+          if (mounted) {
+            setState(() {
+              this.query = query;
+              this.products = products;
+            });
+          }
+        });
+
+    buildSearch() => SearchWidget(
+          text: query,
+          onChanged: searchProduct,
+          hintText: 'Product Name',
+        );
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: customAppBar(),
-      body: Container(
-        padding: const EdgeInsets.only(top: 20),
-        child: Column(
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                fieldCariBarang(),
-                const SizedBox(width: 30),
-                buttonCariBarang(),
-              ],
-            ),
-            const SizedBox(height: 20),
-            Divider(thickness: 7, color: thirdTextColor.withOpacity(0.3)),
-            listProduct(),
-          ],
-        ),
+      body: Column(
+        children: [
+          buildSearch(),
+          // Row(
+          //   mainAxisAlignment: MainAxisAlignment.center,
+          //   children: [
+          //     fieldCariBarang(),
+          //     const SizedBox(width: 30),
+          //     buttonCariBarang(),
+          //   ],
+          // ),
+          Divider(thickness: 7, color: thirdTextColor.withOpacity(0.3)),
+          productFuture(),
+        ],
       ),
     );
   }

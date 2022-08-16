@@ -26,7 +26,7 @@ class ProductProvider with ChangeNotifier {
     required int id,
     required String token,
     required String name,
-    required double stock,
+    required int stock,
     required double price,
     required double capital,
   }) async {
@@ -51,7 +51,7 @@ class ProductProvider with ChangeNotifier {
     required String name,
     required double price,
     double capital = 0,
-    double stock = 0,
+    int stock = 0,
   }) async {
     try {
       await ProductService().create(
@@ -82,5 +82,23 @@ class ProductProvider with ChangeNotifier {
       print(e);
       return false;
     }
+  }
+
+  getProduct({required int id}) {
+    int index = products.indexWhere((element) => element.id == id);
+    if (index != 1) {
+      return products[index];
+    } else {
+      return null;
+    }
+  }
+
+  filteredProduct({required String query}) {
+    return products.where((product) {
+      final nameLower = product.name!.toLowerCase();
+      final searchLower = query.toLowerCase();
+
+      return nameLower.contains(searchLower);
+    }).toList();
   }
 }

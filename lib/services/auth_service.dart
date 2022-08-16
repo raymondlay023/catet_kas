@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 
 class AuthService {
   String baseUrl = 'http://192.168.1.6:8000/api';
+  // String baseUrl = 'http://192.168.200.29:8000/api';
 
   Future<UserModel> register({
     required String name,

@@ -162,4 +162,13 @@ class TransactionProvider with ChangeNotifier {
     }
     return output;
   }
+
+  filteredTransactions({required String query}) {
+    return transactions.where((transaction) {
+      final nameLower = transaction.note!.toLowerCase();
+      final searchLower = query.toLowerCase();
+
+      return nameLower.contains(searchLower);
+    }).toList();
+  }
 }

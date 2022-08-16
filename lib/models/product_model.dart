@@ -3,9 +3,9 @@ class ProductModel {
   late String? name;
   late double? price;
   late int? stock;
-  late int? capital;
+  late double? capital;
   late DateTime? createdAt;
-  late DateTime? updatedAt;
+  // late DateTime? updatedAt;
 
   ProductModel({
     this.id,
@@ -20,9 +20,9 @@ class ProductModel {
     name = json['name'];
     price = double.parse(json['price'].toString());
     stock = json['stock'];
-    capital = json['capital'];
+    capital = double.parse(json['capital'].toString());
     createdAt = DateTime.parse(json['created_at']);
-    updatedAt = DateTime.parse(json['updated_at']);
+    // updatedAt = DateTime.parse(json['updated_at']);
   }
 
   Map<String, dynamic> toJson() {
@@ -33,7 +33,7 @@ class ProductModel {
       'stock': stock,
       'capital': capital,
       'createdAt': createdAt.toString(),
-      'updatedAt': updatedAt.toString(),
+      // 'updatedAt': updatedAt.toString(),
     };
   }
 }
