@@ -1,0 +1,4 @@
+#Wed Aug 17 22:09:12 ICT 2022
+base.0=D\:\\Documents\\Projects\\catet_kas\\build\\app\\intermediates\\dex\\release\\minifyReleaseWithR8\\classes.dex
+renamed.0=classes.dex
+path.0=classes.dex

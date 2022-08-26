@@ -47,7 +47,8 @@ class EditProductPage extends StatelessWidget {
             ),
           ),
         );
-        Navigator.popUntil(context, ModalRoute.withName('/add-transaction'));
+        Navigator.pushNamedAndRemoveUntil(
+            context, '/product-list', ModalRoute.withName('/add-transaction'));
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(

@@ -61,6 +61,7 @@ class _AddTransaksiState extends State<AddTransactionPage> {
             ),
           ),
         );
+
         setState(() {
           type = '';
           getTotalPrice();
@@ -94,55 +95,62 @@ class _AddTransaksiState extends State<AddTransactionPage> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Container(
-              width: MediaQuery.of(context).size.width / 2.55,
-              height: 40,
-              decoration: BoxDecoration(
-                color:
-                    type == 'PEMASUKAN' ? pemasukanColor : Colors.transparent,
-                border: Border.all(
-                  color: pemasukanColor,
+            Flexible(
+              flex: 3,
+              child: Container(
+                width: MediaQuery.of(context).size.width / 2.55,
+                height: 40,
+                decoration: BoxDecoration(
+                  color:
+                      type == 'PEMASUKAN' ? pemasukanColor : Colors.transparent,
+                  border: Border.all(
+                    color: pemasukanColor,
+                  ),
+                  borderRadius: BorderRadius.circular(5),
                 ),
-                borderRadius: BorderRadius.circular(5),
-              ),
-              child: TextButton(
-                style: TextButton.styleFrom(primary: pemasukanColor),
-                onPressed: () => setState(() {
-                  type = 'PEMASUKAN';
-                }),
-                child: Text(
-                  'Pemasukan',
-                  style: secondaryTextStyle.copyWith(
-                    color:
-                        type == 'PEMASUKAN' ? backgroundColor1 : pemasukanColor,
+                child: TextButton(
+                  style: TextButton.styleFrom(primary: pemasukanColor),
+                  onPressed: () => setState(() {
+                    type = 'PEMASUKAN';
+                  }),
+                  child: Text(
+                    'Pemasukan',
+                    style: secondaryTextStyle.copyWith(
+                      color: type == 'PEMASUKAN'
+                          ? backgroundColor1
+                          : pemasukanColor,
+                    ),
                   ),
                 ),
               ),
             ),
-            const SizedBox(width: 25),
-            Container(
-              width: MediaQuery.of(context).size.width / 2.55,
-              height: 40,
-              decoration: BoxDecoration(
-                color: type == 'PENGELUARAN'
-                    ? pengeluaranColor
-                    : Colors.transparent,
-                border: Border.all(
-                  color: pengeluaranColor,
+            Flexible(flex: 1, child: Container()),
+            Flexible(
+              flex: 3,
+              child: Container(
+                width: MediaQuery.of(context).size.width / 2.55,
+                height: 40,
+                decoration: BoxDecoration(
+                  color: type == 'PENGELUARAN'
+                      ? pengeluaranColor
+                      : Colors.transparent,
+                  border: Border.all(
+                    color: pengeluaranColor,
+                  ),
+                  borderRadius: BorderRadius.circular(5),
                 ),
-                borderRadius: BorderRadius.circular(5),
-              ),
-              child: TextButton(
-                style: TextButton.styleFrom(primary: pengeluaranColor),
-                onPressed: () => setState(() {
-                  type = 'PENGELUARAN';
-                }),
-                child: Text(
-                  'Pengeluaran',
-                  style: secondaryTextStyle.copyWith(
-                    color: type == 'PENGELUARAN'
-                        ? backgroundColor1
-                        : pengeluaranColor,
+                child: TextButton(
+                  style: TextButton.styleFrom(primary: pengeluaranColor),
+                  onPressed: () => setState(() {
+                    type = 'PENGELUARAN';
+                  }),
+                  child: Text(
+                    'Pengeluaran',
+                    style: secondaryTextStyle.copyWith(
+                      color: type == 'PENGELUARAN'
+                          ? backgroundColor1
+                          : pengeluaranColor,
+                    ),
                   ),
                 ),
               ),
@@ -184,31 +192,37 @@ class _AddTransaksiState extends State<AddTransactionPage> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(
-              'Total Transaksi',
-              style: secondaryTextStyle.copyWith(
-                color: primaryTextColor,
+            Flexible(
+              flex: 3,
+              child: Text(
+                'Total Transaksi',
+                style: secondaryTextStyle.copyWith(
+                  color: primaryTextColor,
+                ),
               ),
             ),
-            const SizedBox(width: 60),
-            Container(
-              width: 160,
-              height: 40,
-              padding: const EdgeInsets.symmetric(
-                horizontal: 15,
-                vertical: 10,
-              ),
-              child: TextFormField(
-                inputFormatters: [
-                  FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
-                  FilteringTextInputFormatter.singleLineFormatter,
-                ],
-                controller: totalPriceController,
-                cursorColor: primaryColor,
-                decoration: InputDecoration(
-                  focusedBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(
-                      color: primaryColor,
+            Flexible(flex: 1, child: Container()),
+            Flexible(
+              flex: 3,
+              child: Container(
+                width: 160,
+                height: 40,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 15,
+                  vertical: 10,
+                ),
+                child: TextFormField(
+                  inputFormatters: [
+                    FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
+                    FilteringTextInputFormatter.singleLineFormatter,
+                  ],
+                  controller: totalPriceController,
+                  cursorColor: primaryColor,
+                  decoration: InputDecoration(
+                    focusedBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(
+                        color: primaryColor,
+                      ),
                     ),
                   ),
                 ),

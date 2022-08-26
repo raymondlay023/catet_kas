@@ -110,8 +110,8 @@ class _HomePageState extends State<HomePage> {
                   ],
                 ),
                 CircleAvatar(
-                  // backgroundImage: AssetImage('assets/image_profile.png'),
-                  backgroundImage: NetworkImage(user.profilePhotoUrl!),
+                  backgroundImage: AssetImage('assets/image_profile.png'),
+                  // backgroundImage: NetworkImage(user.profilePhotoUrl!),
                   radius: 30,
                 ),
               ],
@@ -299,18 +299,20 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       backgroundColor: backgroundColor1,
       body: SingleChildScrollView(
-        child: Container(
-          alignment: Alignment.center,
-          margin: EdgeInsets.symmetric(
-            horizontal: defaultMargin,
-          ),
-          child: Column(
-            children: [
-              profileCard(),
-              ringkasanBulananHeader(),
-              ringkasanBulananCard(),
-              barChart(),
-            ],
+        child: SafeArea(
+          child: Container(
+            alignment: Alignment.center,
+            margin: EdgeInsets.symmetric(
+              horizontal: defaultMargin,
+            ),
+            child: Column(
+              children: [
+                profileCard(),
+                ringkasanBulananHeader(),
+                ringkasanBulananCard(),
+                barChart(),
+              ],
+            ),
           ),
         ),
       ),

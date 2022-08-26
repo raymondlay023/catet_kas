@@ -4,8 +4,8 @@ import 'package:http/http.dart' as http;
 import 'package:catet_kas/models/shop_model.dart';
 
 class ShopService {
-  String baseUrl = 'http://192.168.1.6:8000/api/shops';
-  // String baseUrl = 'http://192.168.200.29:8000/api/shops';
+  String baseUrl = 'http://catetkas.masuk.id/api/shops';
+  // String baseUrl = 'http://192.168.1.7:8000/api/shops';
 
   Future<ShopModel> getShop(String token) async {
     var url = Uri.parse('$baseUrl/read');

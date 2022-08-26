@@ -36,7 +36,8 @@ class AddProductPage extends StatelessWidget {
             ),
           ),
         );
-        Navigator.popAndPushNamed(context, '/product-list');
+        Navigator.pushNamedAndRemoveUntil(
+            context, '/product-list', ModalRoute.withName('/add-transaction'));
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -216,10 +217,8 @@ class AddProductPage extends StatelessWidget {
       );
     }
 
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      backgroundColor: Colors.white,
-      appBar: AppBar(
+    PreferredSizeWidget customAppBar() {
+      return AppBar(
         toolbarHeight: 65,
         backgroundColor: primaryColor,
         title: Text(
@@ -228,7 +227,13 @@ class AddProductPage extends StatelessWidget {
             color: backgroundColor1,
           ),
         ),
-      ),
+      );
+    }
+
+    return Scaffold(
+      resizeToAvoidBottomInset: false,
+      backgroundColor: Colors.white,
+      appBar: customAppBar(),
       body: Container(
         padding: EdgeInsets.only(
           top: 20,
